@@ -31,17 +31,19 @@ const Home = () => {
   return (
     <>
       <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100 ">
-        <img className="w-12" src={logo} alt="Your Company" />
+        <img className="w-16" src={logo} alt="Your Company" />
         <RestaurantSearch restaurantList={restaurantList} />
       </div>
-      <h1 className="font-bold text-xl mb-2">Restaurantes</h1>
-      <div className="w-full flex flex-row flex-wrap">
-        {restaurantList?.length > 0 &&
-          restaurantList?.map((restaurant) => (
-            <div className="w-auto p-2" key={restaurant.uid}>
-              <RestaurantCard restaurant={restaurant} />
-            </div>
-          ))}
+      <div className="flex flex-col items-center justify-center ">
+        <h1 className="font-bold text-xl my-3">¿Dónde deseas comer?</h1>
+        <div className="w-full flex flex-row flex-wrap justify-center items-start">
+          {restaurantList?.length > 0 &&
+            restaurantList?.map((restaurant) => (
+              <div className="w-auto p-2" key={restaurant.uid}>
+                <RestaurantCard restaurant={restaurant} />
+              </div>
+            ))}
+        </div>
       </div>
       <button onClick={() => signOut(auth)}>cerrar sesión</button>
     </>
