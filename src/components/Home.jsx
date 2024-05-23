@@ -28,7 +28,7 @@ const Home = () => {
   }, []);
 
   const getRestaurant = (restaurantId) => {
-    navigate(`/restaurant/:${restaurantId}`);
+    navigate(`/restaurant/${restaurantId}`);
   };
 
   const logout = () => {
@@ -36,7 +36,6 @@ const Home = () => {
     navigate("/login");
   };
 
-  console.log("restaurantList", restaurantList);
   return (
     <>
       <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100 ">

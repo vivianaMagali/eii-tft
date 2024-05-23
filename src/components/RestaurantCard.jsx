@@ -20,13 +20,13 @@ const RestaurantCard = ({ restaurant }) => {
 
         <div className="text-gray-700 text-base flex items-center py-1">
           <svg
-            class="h-4 w-4 text-teal-500 mr-1"
+            className="h-4 w-4 text-teal-500 mr-1"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             {" "}
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />{" "}
@@ -38,13 +38,13 @@ const RestaurantCard = ({ restaurant }) => {
         </div>
         <div className="text-gray-700 text-base flex items-center pb-1">
           <svg
-            class="h-4 w-4 text-teal-500 mr-1"
+            className="h-4 w-4 text-teal-500 mr-1"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             {" "}
             <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />{" "}
@@ -56,15 +56,15 @@ const RestaurantCard = ({ restaurant }) => {
         </div>
         <div className="text-gray-700 text-base flex items-center">
           <svg
-            class="h-4 w-4 text-teal-500 mr-1"
+            className="h-4 w-4 text-teal-500 mr-1"
             width="24"
             height="24"
             viewBox="0 0 24 24"
-            stroke-width="2"
+            strokeWidth="2"
             stroke="currentColor"
             fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             {" "}
             <path stroke="none" d="M0 0h24v24H0z" />{" "}
