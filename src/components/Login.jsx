@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/logo-removebg-preview.png";
+import { useNavigate } from "react-router-dom";
 
 import appFirebase from "../firebase/credentials";
 import {
@@ -13,6 +14,7 @@ const Login = () => {
   const [registering, setRegistering] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [error, setError] = useState();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ const Login = () => {
       try {
         await signInWithEmailAndPassword(auth, email.value, password.value);
         setError(undefined);
+        navigate("/home");
       } catch (error) {
         if (error.code === "auth/user-not-found") {
           setError("Error: El usuario es incorrecto");
@@ -36,11 +39,14 @@ const Login = () => {
       try {
         await createUserWithEmailAndPassword(auth, email.value, password.value);
         setError(undefined);
+        navigate("/home");
       } catch (error) {
         if (error.code === "auth/weak-password") {
           setError(
             "Error: La contraseña es demasiado débil. Debe tener al menos 6 caracteres.",
           );
+        } else if (error.code === "auth/email-already-in-use") {
+          setError("Error: Este correo ya ha sido registrado");
         } else {
           setError(error.message);
           console.error("Error:", error.message);

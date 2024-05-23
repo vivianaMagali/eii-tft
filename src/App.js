@@ -6,6 +6,7 @@ import firebase, { FirebaseContext } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Login from "./components/Login";
 import Home from "./components/Home";
+import Restaurant from "./components/Restaurant";
 
 const auth = getAuth(credencialsFirebase);
 
@@ -36,13 +37,15 @@ function App() {
   return (
     <div>
       <FirebaseContext.Provider value={{ prueba: "prueba" }}>
-        {/* <div> */}
-        {user ? <Home email={user.email} /> : <Login />}
-        {/* <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/" element={<Home />} />
-        </Routes> */}
-        {/* </div> */}
+        <Routes>
+          <Route
+            path="/"
+            element={user ? <Home email={user.email} /> : <Login />}
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/restaurant/:id" element={<Restaurant />} />
+        </Routes>
       </FirebaseContext.Provider>
     </div>
   );
