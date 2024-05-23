@@ -6,22 +6,33 @@ import { db } from "../firebase/firebase";
 const Restaurant = () => {
   const { id } = useParams();
   const [menu, setMenu] = useState([]);
+  const [drinks, setDrinks] = useState([]);
 
   useEffect(() => {
     if (!id) return;
 
     const restaurantDocRef = doc(db, "restaurants", id);
 
-    const inventoryCollectionRef = collection(restaurantDocRef, "inventory");
+    const menuCollectionRef = collection(restaurantDocRef, "menu");
 
-    const unsubscribe = onSnapshot(inventoryCollectionRef, (snapshot) => {
+    const unsubscribeMenu = onSnapshot(menuCollectionRef, (snapshot) => {
       setMenu(snapshot.docs.map((doc) => doc.data()));
     });
 
-    return () => unsubscribe();
+    const drinksCollectionRef = collection(restaurantDocRef, "drinks");
+
+    const unsubscribeDrinks = onSnapshot(drinksCollectionRef, (snapshot) => {
+      setDrinks(snapshot.docs.map((doc) => doc.data()));
+    });
+
+    return () => {
+      unsubscribeMenu();
+      unsubscribeDrinks();
+    };
   }, [id]);
 
   console.log("menu", menu);
+  console.log("drinks", drinks);
   return <div>Restaurant: {id}</div>;
 };
 
