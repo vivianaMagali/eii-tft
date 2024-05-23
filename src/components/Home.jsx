@@ -1,31 +1,40 @@
 import React, { useContext, useEffect, useState } from "react";
 import appFirebase from "../firebase/credentials";
 import { getAuth, signOut } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import logo from "../assets/logo-removebg-preview.png";
 import { FirebaseContext } from "../firebase";
 import RestaurantCard from "./RestaurantCard";
 import RestaurantSearch from "./RestaurantSearch";
+import { useNavigate } from "react-router-dom";
 
 const auth = getAuth(appFirebase);
 
 const Home = () => {
   const [restaurantList, setRestaurantList] = useState();
+  const navigate = useNavigate();
 
   // const { firebase } = useContext(FirebaseContext);
   // console.log("firebase", firebase);
 
   useEffect(() => {
     const pruebaRef = collection(db, "restaurants");
-    getDocs(pruebaRef).then((result) => {
-      setRestaurantList(
-        result.docs.map((doc) => {
-          return doc.data();
-        }),
-      );
+    const unsubscribe = onSnapshot(pruebaRef, (snapshot) => {
+      setRestaurantList(snapshot.docs.map((doc) => doc.data()));
     });
+
+    return () => unsubscribe();
   }, []);
+
+  const getRestaurant = (restaurantId) => {
+    navigate(`/restaurant/:${restaurantId}`);
+  };
+
+  const logout = () => {
+    signOut(auth);
+    navigate("/login");
+  };
 
   console.log("restaurantList", restaurantList);
   return (
@@ -39,13 +48,17 @@ const Home = () => {
         <div className="w-full flex flex-row flex-wrap justify-center items-start">
           {restaurantList?.length > 0 &&
             restaurantList?.map((restaurant) => (
-              <div className="w-auto p-2" key={restaurant.uid}>
+              <button
+                className="w-auto p-2 hover:scale-[1.1]"
+                key={restaurant.uid}
+                onClick={() => getRestaurant(restaurant.uid)}
+              >
                 <RestaurantCard restaurant={restaurant} />
-              </div>
+              </button>
             ))}
         </div>
       </div>
-      <button onClick={() => signOut(auth)}>cerrar sesión</button>
+      <button onClick={() => logout()}>cerrar sesión</button>
     </>
   );
 };
