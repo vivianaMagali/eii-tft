@@ -48,7 +48,7 @@ const Home = () => {
           {restaurantList?.length > 0 &&
             restaurantList?.map((restaurant) => (
               <button
-                className="w-auto p-2 hover:scale-[1.1]"
+                className="w-auto p-2 hover:scale-[1.1] duration-75"
                 key={restaurant.uid}
                 onClick={() => getRestaurant(restaurant.uid)}
               >
