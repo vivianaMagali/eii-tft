@@ -42,7 +42,7 @@ const Home = () => {
         <img className="w-16" src={logo} alt="Your Company" />
         <RestaurantSearch restaurantList={restaurantList} />
       </div>
-      <div className="flex flex-col items-center justify-center ">
+      <div className="flex flex-col items-center justify-center">
         <h1 className="font-bold text-xl my-3">¿Dónde deseas comer?</h1>
         <div className="w-full flex flex-row flex-wrap justify-center items-start">
           {restaurantList?.length > 0 &&

@@ -6,12 +6,14 @@ import RestaurantSearch from "./RestaurantSearch";
 import logo from "../assets/logo-removebg-preview.png";
 import MenuCard from "./MenuCard";
 import OrderSummary from "./OrderSummary";
+import ConfirmOrder from "./ConfirmOrder";
 
 const Restaurant = () => {
   const { id } = useParams();
   const [menus, setMenus] = useState([]);
   const [drinks, setDrinks] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -35,29 +37,39 @@ const Restaurant = () => {
       unsubscribeDrinks();
     };
   }, [id]);
+
   return (
-    <div className="flex flex-col">
-      <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
-        <img className="w-16" src={logo} alt="Your Company" />
-        <RestaurantSearch />
-      </div>
-      <div className="flex flex-row justify-center my-14 px-8">
-        <div className="flex flex-row flex-wrap items-start">
-          {menus?.length > 0 &&
-            menus.map((menu) => (
-              <MenuCard
-                key={menu.name}
-                menu={menu}
-                orders={orders}
-                setOrders={setOrders}
-              />
-            ))}
+    <>
+      <div className="flex flex-col">
+        <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
+          <img className="w-16" src={logo} alt="Your Company" />
+          <RestaurantSearch />
         </div>
-        {orders.length > 0 ? (
-          <OrderSummary className="duration-75" orders={orders} />
-        ) : null}
+        {showModal && (
+          <ConfirmOrder orders={orders} setShowModal={setShowModal} />
+        )}
+        <div className="flex flex-row justify-center my-14 px-8">
+          <div className="flex flex-row flex-wrap items-start">
+            {menus?.length > 0 &&
+              menus.map((menu) => (
+                <MenuCard
+                  key={menu.name}
+                  menu={menu}
+                  orders={orders}
+                  setOrders={setOrders}
+                />
+              ))}
+          </div>
+          {orders.length > 0 ? (
+            <OrderSummary
+              className="duration-75"
+              orders={orders}
+              setShowModal={setShowModal}
+            />
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
