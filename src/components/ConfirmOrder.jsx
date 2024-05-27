@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import PlacesPicker from "@tasiodev/react-places-autocomplete";
 
 const ConfirmOrder = ({ orders, setShowModal }) => {
+  const [selectedOptionPlace, setSelectedOptionPlace] = useState("home");
+  const [value, setValue] = useState(null);
+
   return (
     <div
       id="crud-modal"
@@ -8,8 +12,8 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
       aria-hidden="true"
       className="fixed z-10 inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
     >
-      <div className="bg-white p-5 rounded flex flex-col justify-center items-center gap-5">
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      <div className="bg-white w-96 rounded flex flex-col justify-center items-center gap-5">
+        <div className="relative w-full bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Confirmar pedido
@@ -38,90 +42,102 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
             </button>
           </div>
           <form className="p-4 md:p-5">
-            <div className="grid gap-4 mb-4 grid-cols-2">
-              <div className="col-span-2">
-                <label
-                  for="name"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Type product name"
-                  required=""
-                />
-              </div>
-              <div className="col-span-2 sm:col-span-1">
-                <label
-                  for="price"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Price
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  id="price"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="$2999"
-                  required=""
-                />
-              </div>
-              <div className="col-span-2 sm:col-span-1">
-                <label
-                  for="category"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Category
-                </label>
-                <select
-                  id="category"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                >
-                  <option selected="">Select category</option>
-                  <option value="TV">TV/Monitors</option>
-                  <option value="PC">PC</option>
-                  <option value="GA">Gaming/Console</option>
-                  <option value="PH">Phones</option>
-                </select>
-              </div>
-              <div className="col-span-2">
-                <label
-                  for="description"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  ¿Deseas añadir un comentario?
-                </label>
-                <textarea
-                  id="description"
-                  rows="4"
-                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
-                  placeholder="ej: el bocadillo partido a la mitad"
-                ></textarea>
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="text-white inline-flex items-center bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-teal-600 dark:hover:bg-teal-700 dark:focus:ring-teal-800"
-            >
-              <svg
-                className="me-1 -ms-1 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+            <div className="col-span-2">
+              <label
+                for="name"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-              Add new product
-            </button>
+                Tus productos
+              </label>
+
+              {orders.map((order, index) => (
+                <ul className="mb-8" key={`${order.name + "-" + index}`}>
+                  <li className="flex justify-between mb-2">
+                    <div>
+                      <span className="font-semibold">x{order.amount}</span>
+                      <span> {order.name}</span>
+                      <span>({order.ingredients})</span>
+                    </div>
+                    <span className="text-gray-600">
+                      {order.amount * order.price}€
+                    </span>
+                  </li>
+                </ul>
+              ))}
+            </div>
+            <div className="flex justify-end">
+              <span
+                for="price"
+                className="block mb-2 font-bold text-sm text-gray-900 dark:text-white"
+              >
+                Total: 30€
+              </span>
+            </div>
+
+            <div className="col-span-2 sm:col-span-1">
+              <label
+                for="category"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                ¿Dónde deseas comerlo?
+              </label>
+              <select
+                id="category"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                value={selectedOptionPlace}
+                onChange={(e) => setSelectedOptionPlace(e.target.value)}
+              >
+                <option selected value="home">
+                  A domicilio
+                </option>
+                <option value="pickup">Recogida en local</option>
+                <option value="local">En el local</option>
+              </select>
+            </div>
+            {selectedOptionPlace === "home" && (
+              <div className="my-2">
+                <PlacesPicker
+                  gMapsKey="AIzaSyDbKaQl6IEo_hLQ-qBLV-uPEEaIvbe8ULk"
+                  onChange={setValue}
+                  placeholder="Busca una dirección..."
+                  mapExpanded={true}
+                  disableMap={true}
+                />
+              </div>
+            )}
+            {selectedOptionPlace === "pickup" && <p>pickup</p>}
+            {selectedOptionPlace === "local" && (
+              <>
+                <span
+                  for="name"
+                  className="block my-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Dirección del restaurante (?)
+                </span>
+              </>
+            )}
+            <div className="col-span-2">
+              <label
+                for="description"
+                className="block my-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                ¿Deseas añadir un comentario?
+              </label>
+              <textarea
+                id="description"
+                rows="4"
+                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
+                placeholder="ej: el bocadillo partido a la mitad"
+              ></textarea>
+            </div>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="text-white mt-2 bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-teal-600 dark:hover:bg-teal-700 dark:focus:ring-teal-800"
+              >
+                Aceptar
+              </button>
+            </div>
           </form>
         </div>
       </div>

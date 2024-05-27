@@ -60,6 +60,7 @@ const Restaurant = () => {
                 />
               ))}
           </div>
+
           {orders.length > 0 ? (
             <OrderSummary
               className="duration-75"
