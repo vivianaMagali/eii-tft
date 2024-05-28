@@ -52,16 +52,16 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
 
               {orders.map((order, index) => (
                 <ul className="mb-8" key={`${order.name + "-" + index}`}>
-                  <li className="flex justify-between mb-2">
+                  <li className="flex justify-between mb-2 text-sm">
                     <div>
                       <span className="font-semibold">x{order.amount}</span>
                       <span> {order.name}</span>
-                      <span>({order.ingredients})</span>
                     </div>
                     <span className="text-gray-600">
                       {order.amount * order.price}€
                     </span>
                   </li>
+                  <span className="text-xs">({order.ingredients})</span>
                 </ul>
               ))}
             </div>
@@ -103,6 +103,10 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
                   mapExpanded={true}
                   disableMap={true}
                 />
+                <input
+                  className="bg-gray-50 border my-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  placeholder="Nº piso, portal, etc."
+                />
               </div>
             )}
             {selectedOptionPlace === "pickup" && <p>pickup</p>}
@@ -127,7 +131,7 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
                 id="description"
                 rows="4"
                 className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
-                placeholder="ej: el bocadillo partido a la mitad"
+                placeholder="Ej: el bocadillo partido a la mitad"
               ></textarea>
             </div>
             <div className="flex justify-center">
