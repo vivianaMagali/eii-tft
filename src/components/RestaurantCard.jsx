@@ -1,6 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getCurrentLocation, haversineDistance } from "../utils";
 
 const RestaurantCard = ({ restaurant }) => {
+  const [distance, setDistance] = useState();
+  const getLocation = async () => {
+    try {
+      const location = await getCurrentLocation();
+      return location;
+    } catch (error) {
+      console.error("Error obtaining location:", error);
+    }
+  };
+
+  useEffect(() => {
+    const calculateDistance = async () => {
+      try {
+        getLocation().then((location) => {
+          const restaurantLocation = {
+            latitude: restaurant.basic_information.latitude,
+            longitude: restaurant.basic_information.longitude,
+          };
+          const dist = haversineDistance(location, restaurantLocation);
+          setDistance(dist);
+        });
+      } catch (error) {
+        console.error("Error calculating distance:", error);
+      }
+    };
+
+    calculateDistance();
+  }, [restaurant]);
+
   return (
     <div className="w-72 rounded overflow-hidden shadow-lg">
       <img
@@ -72,6 +102,9 @@ const RestaurantCard = ({ restaurant }) => {
           </svg>
           <span className="text-xs">{restaurant.basic_information.phone}</span>
         </div>
+      </div>
+      <div className="flex justify-end mx-2">
+        <span className="text-xs">Distancia: {distance.toFixed(2)} km</span>
       </div>
     </div>
   );

@@ -4,7 +4,6 @@ const OrderSummary = ({ orders, setShowModal }) => {
   const [total, setTotal] = useState();
 
   const confirmOrder = () => {
-    console.log("confirmar pedido");
     setShowModal(true);
   };
 

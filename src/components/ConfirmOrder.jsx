@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import PlacesPicker from "@tasiodev/react-places-autocomplete";
 
-const ConfirmOrder = ({ orders, setShowModal }) => {
+const ConfirmOrder = ({ orders, setShowModal, restaurant }) => {
   const [selectedOptionPlace, setSelectedOptionPlace] = useState("home");
   const [value, setValue] = useState(null);
 
   return (
     <div
       id="crud-modal"
-      tabindex="-1"
+      tabIndex="-1"
       aria-hidden="true"
       className="fixed z-10 inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
     >
-      <div className="bg-white w-96 rounded flex flex-col justify-center items-center gap-5">
-        <div className="relative w-full bg-white rounded-lg shadow dark:bg-gray-700">
+      <div className="bg-white w-96 h-5/6 rounded flex flex-col justify-center items-center overflow-y-scroll">
+        <div className="relative w-full h-5/6 bg-white rounded-lg dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Confirmar pedido
@@ -44,7 +44,7 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
           <form className="p-4 md:p-5">
             <div className="col-span-2">
               <label
-                for="name"
+                htmlFor="name"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Tus productos
@@ -61,13 +61,15 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
                       {order.amount * order.price}€
                     </span>
                   </li>
-                  <span className="text-xs">({order.ingredients})</span>
+                  {order.ingredients && (
+                    <span className="text-xs">({order.ingredients})</span>
+                  )}
                 </ul>
               ))}
             </div>
             <div className="flex justify-end">
               <span
-                for="price"
+                htmlFor="price"
                 className="block mb-2 font-bold text-sm text-gray-900 dark:text-white"
               >
                 Total: 30€
@@ -76,7 +78,7 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
 
             <div className="col-span-2 sm:col-span-1">
               <label
-                for="category"
+                htmlFor="category"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 ¿Dónde deseas comerlo?
@@ -87,7 +89,7 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
                 value={selectedOptionPlace}
                 onChange={(e) => setSelectedOptionPlace(e.target.value)}
               >
-                <option selected value="home">
+                <option defaultValue="home" value="home">
                   A domicilio
                 </option>
                 <option value="pickup">Recogida en local</option>
@@ -109,20 +111,22 @@ const ConfirmOrder = ({ orders, setShowModal }) => {
                 />
               </div>
             )}
-            {selectedOptionPlace === "pickup" && <p>pickup</p>}
+            {selectedOptionPlace === "pickup" && (
+              <span>{restaurant.basic_information.direction}</span>
+            )}
             {selectedOptionPlace === "local" && (
               <>
                 <span
-                  for="name"
+                  htmlFor="name"
                   className="block my-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Dirección del restaurante (?)
+                  {restaurant.basic_information.direction}
                 </span>
               </>
             )}
             <div className="col-span-2">
               <label
-                for="description"
+                htmlFor="description"
                 className="block my-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 ¿Deseas añadir un comentario?

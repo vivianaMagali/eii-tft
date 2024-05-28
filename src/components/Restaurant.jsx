@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import { collection, doc, onSnapshot } from "firebase/firestore";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { db } from "../firebase/firebase";
 import RestaurantSearch from "./RestaurantSearch";
 import logo from "../assets/logo-removebg-preview.png";
@@ -8,12 +8,21 @@ import MenuCard from "./MenuCard";
 import OrderSummary from "./OrderSummary";
 import ConfirmOrder from "./ConfirmOrder";
 
+const RestaurantContext = createContext();
+
+export const useRestaurant = () => {
+  return useContext(RestaurantContext);
+};
+
 const Restaurant = () => {
   const { id } = useParams();
   const [menus, setMenus] = useState([]);
   const [drinks, setDrinks] = useState([]);
   const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
+  const location = useLocation();
+  const { restaurant } = location.state || {};
 
   useEffect(() => {
     if (!id) return;
@@ -39,38 +48,54 @@ const Restaurant = () => {
   }, [id]);
 
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
-          <img className="w-16" src={logo} alt="Your Company" />
-          <RestaurantSearch />
-        </div>
-        {showModal && (
-          <ConfirmOrder orders={orders} setShowModal={setShowModal} />
-        )}
-        <div className="flex flex-row justify-center my-14 px-8">
+    <div className="flex flex-col">
+      <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
+        <img className="w-16" src={logo} alt="Your Company" />
+        <RestaurantSearch />
+      </div>
+      {showModal && (
+        <ConfirmOrder
+          orders={orders}
+          setShowModal={setShowModal}
+          restaurant={restaurant}
+        />
+      )}
+      <div className="flex flex-row justify-center my-14 px-8">
+        <div className="flex flex-col justify-center">
+          <span className="px-8">Comidas</span>
           <div className="flex flex-row flex-wrap items-start">
             {menus?.length > 0 &&
               menus.map((menu) => (
                 <MenuCard
                   key={menu.name}
-                  menu={menu}
+                  product={menu}
                   orders={orders}
                   setOrders={setOrders}
                 />
               ))}
           </div>
-
-          {orders.length > 0 ? (
-            <OrderSummary
-              className="duration-75"
-              orders={orders}
-              setShowModal={setShowModal}
-            />
-          ) : null}
+          <span className="px-8">Bebidas</span>
+          <div className="flex flex-row flex-wrap items-start">
+            {drinks?.length > 0 &&
+              drinks.map((drink) => (
+                <MenuCard
+                  key={drink.name}
+                  product={drink}
+                  orders={orders}
+                  setOrders={setOrders}
+                />
+              ))}
+          </div>
         </div>
+        {orders.length > 0 ? (
+          <OrderSummary
+            className="duration-75"
+            orders={orders}
+            setShowModal={setShowModal}
+          />
+        ) : null}
       </div>
-    </>
+    </div>
   );
 };
 

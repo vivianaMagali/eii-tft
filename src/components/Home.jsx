@@ -27,8 +27,8 @@ const Home = () => {
     return () => unsubscribe();
   }, []);
 
-  const getRestaurant = (restaurantId) => {
-    navigate(`/restaurant/${restaurantId}`);
+  const getRestaurant = (restaurant) => {
+    navigate(`/restaurant/${restaurant.uid}`, { state: { restaurant } });
   };
 
   const logout = () => {
@@ -50,7 +50,7 @@ const Home = () => {
               <button
                 className="w-auto p-2 hover:scale-[1.1] duration-75"
                 key={restaurant.uid}
-                onClick={() => getRestaurant(restaurant.uid)}
+                onClick={() => getRestaurant(restaurant)}
               >
                 <RestaurantCard restaurant={restaurant} />
               </button>
