@@ -1,42 +1,39 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router";
 import credencialsFirebase from "./firebase/credentials";
-import firebase, { FirebaseContext } from "./firebase";
 
+import { FirebaseContext } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Restaurant from "./components/Restaurant";
+import { db } from "./firebase/firebase";
 
 const auth = getAuth(credencialsFirebase);
 
 function App() {
   const [user, setUser] = useState();
-
-  // onAuthStateChanged(auth, (userLogged) => {
-  //   if (userLogged) {
-  //     setUser(userLogged);
-  //   } else {
-  //     setUser(null);
-  //   }
-  // });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (userLogged) => {
-      if (userLogged) {
-        setUser(userLogged);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        setUser({ uid: user.uid, ...userDoc.data() });
       } else {
         setUser(null);
       }
+      setLoading(false);
     });
 
-    // Limpia la suscripción al desmontar el componente
-    return () => unsubscribe();
-  }, []);
+    return unsubscribe;
+  }, [auth, db]);
 
   return (
     <div>
-      <FirebaseContext.Provider value={{ prueba: "prueba" }}>
+      <FirebaseContext.Provider value={{ user }}>
         <Routes>
           <Route
             path="/"

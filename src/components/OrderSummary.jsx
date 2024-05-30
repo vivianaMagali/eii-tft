@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-const OrderSummary = ({ orders, setShowModal }) => {
+const OrderSummary = ({
+  orders,
+  setShowConfirmOrderModal,
+  showOrderSummary,
+}) => {
   const [total, setTotal] = useState();
 
   const confirmOrder = () => {
-    setShowModal(true);
+    setShowConfirmOrderModal(true);
   };
 
   useEffect(() => {
@@ -13,7 +17,7 @@ const OrderSummary = ({ orders, setShowModal }) => {
     );
   }, [orders]);
 
-  return (
+  return showOrderSummary ? (
     <div className="w-1/3 mx-auto">
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <div className="bg-teal-600 text-white py-4 px-6 text-center">
@@ -92,7 +96,7 @@ const OrderSummary = ({ orders, setShowModal }) => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default OrderSummary;

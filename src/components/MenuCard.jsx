@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const MenuCard = ({ product, orders, setOrders }) => {
+const MenuCard = ({ product, orders, setOrders, setShowOrderSummary }) => {
   const [quantity, setQuantity] = useState(0);
+
+  useEffect(() => {
+    if (orders.length > 0) {
+      setShowOrderSummary(true);
+    }
+  }, [orders]);
 
   const addProduct = () => {
     setQuantity(quantity + 1);

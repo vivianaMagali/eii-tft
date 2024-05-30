@@ -1,9 +1,59 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import PlacesPicker from "@tasiodev/react-places-autocomplete";
+import { collection, addDoc, setDoc } from "firebase/firestore";
+import { useParams } from "react-router";
+import { formatDate } from "../utils";
+import { FirebaseContext } from "../firebase";
+import { db } from "../firebase/firebase";
+import { useNavigate } from "react-router-dom";
 
-const ConfirmOrder = ({ orders, setShowModal, restaurant }) => {
+const ConfirmOrder = ({
+  orders,
+  setShowConfirmOrderModal,
+  restaurant,
+  setShowOrderSummary,
+}) => {
   const [selectedOptionPlace, setSelectedOptionPlace] = useState("home");
-  const [value, setValue] = useState(null);
+  const [place, setPlace] = useState(null);
+  const { id } = useParams();
+  const { user } = useContext(FirebaseContext);
+  const navigate = useNavigate();
+
+  const saveOrder = async (e) => {
+    e.preventDefault();
+    var inputElement = document.querySelector(
+      ".my-2 .Field_container__t90fB .Field_field__DxK5r input",
+    );
+    var inputValue = inputElement.value;
+
+    const dateNow = new Date();
+    const docData = {
+      date: formatDate(dateNow),
+      order: orders,
+      state: 1,
+      userUid: user.uid,
+      category: e.target.category.value,
+      placeId: place,
+      direction: inputValue,
+      detail: e.target.detail.value,
+      description: e.target.description.value,
+    };
+
+    try {
+      const comandasRef = collection(db, "restaurants", id, "comandas");
+      const docRef = await addDoc(comandasRef, docData);
+      const updatedDocData = {
+        ...docData,
+        uidOrder: docRef.id,
+      };
+      await setDoc(docRef, updatedDocData);
+      setShowConfirmOrderModal(false);
+      setShowOrderSummary(false);
+      navigate(`/restaurant/${restaurant.uid}`, { state: { restaurant } });
+    } catch (e) {
+      console.error("Error añadiendo el documento: ", e);
+    }
+  };
 
   return (
     <div
@@ -20,7 +70,7 @@ const ConfirmOrder = ({ orders, setShowModal, restaurant }) => {
             </h3>
             <button
               type="button"
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowConfirmOrderModal(false)}
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
               data-modal-toggle="crud-modal"
             >
@@ -41,7 +91,7 @@ const ConfirmOrder = ({ orders, setShowModal, restaurant }) => {
               </svg>
             </button>
           </div>
-          <form className="p-4 md:p-5">
+          <form className="p-4 md:p-5" onSubmit={saveOrder}>
             <div className="col-span-2">
               <label
                 htmlFor="name"
@@ -85,6 +135,7 @@ const ConfirmOrder = ({ orders, setShowModal, restaurant }) => {
               </label>
               <select
                 id="category"
+                name="category"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 value={selectedOptionPlace}
                 onChange={(e) => setSelectedOptionPlace(e.target.value)}
@@ -99,15 +150,18 @@ const ConfirmOrder = ({ orders, setShowModal, restaurant }) => {
             {selectedOptionPlace === "home" && (
               <div className="my-2">
                 <PlacesPicker
+                  id="prueba"
                   gMapsKey="AIzaSyDbKaQl6IEo_hLQ-qBLV-uPEEaIvbe8ULk"
-                  onChange={setValue}
+                  onChange={setPlace}
                   placeholder="Busca una dirección..."
                   mapExpanded={true}
                   disableMap={true}
                 />
                 <input
+                  required
                   className="bg-gray-50 border my-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Nº piso, portal, etc."
+                  name="detail"
                 />
               </div>
             )}
@@ -134,6 +188,7 @@ const ConfirmOrder = ({ orders, setShowModal, restaurant }) => {
               <textarea
                 id="description"
                 rows="4"
+                name="description"
                 className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
                 placeholder="Ej: el bocadillo partido a la mitad"
               ></textarea>

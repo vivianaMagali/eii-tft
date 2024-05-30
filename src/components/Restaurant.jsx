@@ -2,11 +2,10 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { useLocation, useParams } from "react-router";
 import { db } from "../firebase/firebase";
-import RestaurantSearch from "./RestaurantSearch";
-import logo from "../assets/logo-removebg-preview.png";
 import MenuCard from "./MenuCard";
 import OrderSummary from "./OrderSummary";
 import ConfirmOrder from "./ConfirmOrder";
+import Header from "./Header";
 
 const RestaurantContext = createContext();
 
@@ -19,7 +18,8 @@ const Restaurant = () => {
   const [menus, setMenus] = useState([]);
   const [drinks, setDrinks] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showConfirmOrderModal, setShowConfirmOrderModal] = useState(false);
+  const [showOrderSummary, setShowOrderSummary] = useState(false);
 
   const location = useLocation();
   const { restaurant } = location.state || {};
@@ -49,15 +49,13 @@ const Restaurant = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
-        <img className="w-16" src={logo} alt="Your Company" />
-        <RestaurantSearch />
-      </div>
-      {showModal && (
+      <Header />
+      {showConfirmOrderModal && (
         <ConfirmOrder
           orders={orders}
-          setShowModal={setShowModal}
+          setShowConfirmOrderModal={setShowConfirmOrderModal}
           restaurant={restaurant}
+          setShowOrderSummary={setShowOrderSummary}
         />
       )}
       <div className="flex flex-row justify-center my-14 px-8">
@@ -71,6 +69,7 @@ const Restaurant = () => {
                   product={menu}
                   orders={orders}
                   setOrders={setOrders}
+                  setShowOrderSummary={setShowOrderSummary}
                 />
               ))}
           </div>
@@ -83,6 +82,7 @@ const Restaurant = () => {
                   product={drink}
                   orders={orders}
                   setOrders={setOrders}
+                  setShowOrderSummary={setShowOrderSummary}
                 />
               ))}
           </div>
@@ -91,7 +91,9 @@ const Restaurant = () => {
           <OrderSummary
             className="duration-75"
             orders={orders}
-            setShowModal={setShowModal}
+            setShowConfirmOrderModal={setShowConfirmOrderModal}
+            showOrderSummary={showOrderSummary}
+            setShowOrderSummary={setShowOrderSummary}
           />
         ) : null}
       </div>

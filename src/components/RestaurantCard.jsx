@@ -104,7 +104,7 @@ const RestaurantCard = ({ restaurant }) => {
         </div>
       </div>
       <div className="flex justify-end mx-2">
-        <span className="text-xs">Distancia: {distance.toFixed(2)} km</span>
+        <span className="text-xs">Distancia: {distance?.toFixed(2)} km</span>
       </div>
     </div>
   );
