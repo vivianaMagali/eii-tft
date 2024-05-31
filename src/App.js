@@ -10,6 +10,7 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import Restaurant from "./components/Restaurant";
 import { db } from "./firebase/firebase";
+import Profile from "./components/Profile";
 
 const auth = getAuth(credencialsFirebase);
 
@@ -41,6 +42,7 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/restaurant/:id" element={<Restaurant />} />
         </Routes>
       </FirebaseContext.Provider>

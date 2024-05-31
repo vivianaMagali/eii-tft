@@ -12,6 +12,7 @@ const ConfirmOrder = ({
   setShowConfirmOrderModal,
   restaurant,
   setShowOrderSummary,
+  total,
 }) => {
   const [selectedOptionPlace, setSelectedOptionPlace] = useState("home");
   const [place, setPlace] = useState(null);
@@ -122,7 +123,7 @@ const ConfirmOrder = ({
                 htmlFor="price"
                 className="block mb-2 font-bold text-sm text-gray-900 dark:text-white"
               >
-                Total: 30€
+                Total: {total}€
               </span>
             </div>
 

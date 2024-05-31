@@ -18,6 +18,7 @@ const Restaurant = () => {
   const [menus, setMenus] = useState([]);
   const [drinks, setDrinks] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [total, setTotal] = useState();
   const [showConfirmOrderModal, setShowConfirmOrderModal] = useState(false);
   const [showOrderSummary, setShowOrderSummary] = useState(false);
 
@@ -56,6 +57,7 @@ const Restaurant = () => {
           setShowConfirmOrderModal={setShowConfirmOrderModal}
           restaurant={restaurant}
           setShowOrderSummary={setShowOrderSummary}
+          total={total}
         />
       )}
       <div className="flex flex-row justify-center my-14 px-8">
@@ -94,6 +96,8 @@ const Restaurant = () => {
             setShowConfirmOrderModal={setShowConfirmOrderModal}
             showOrderSummary={showOrderSummary}
             setShowOrderSummary={setShowOrderSummary}
+            total={total}
+            setTotal={setTotal}
           />
         ) : null}
       </div>

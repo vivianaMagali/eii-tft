@@ -1,14 +1,16 @@
 import React from "react";
 import RestaurantSearch from "./RestaurantSearch";
 import logo from "../assets/logo-removebg-preview.png";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   const goRecord = () => {
-    console.log("historial");
+    console.log("/record");
   };
 
   const goProfile = () => {
-    console.log("perfil");
+    navigate("/profile");
   };
 
   return (

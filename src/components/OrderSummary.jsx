@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 const OrderSummary = ({
   orders,
   setShowConfirmOrderModal,
   showOrderSummary,
+  total,
+  setTotal,
 }) => {
-  const [total, setTotal] = useState();
-
   const confirmOrder = () => {
     setShowConfirmOrderModal(true);
   };
