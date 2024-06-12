@@ -22,24 +22,53 @@ const ConfirmOrder = ({
 
   const saveOrder = async (e) => {
     e.preventDefault();
+    const dateNow = new Date();
     var inputElement = document.querySelector(
       ".my-2 .Field_container__t90fB .Field_field__DxK5r input",
     );
-    var inputValue = inputElement.value;
-
-    const dateNow = new Date();
-    const docData = {
-      date: formatDate(dateNow),
-      order: orders,
-      state: 1,
-      userUid: user.uid,
-      category: e.target.category.value,
-      placeId: place,
-      direction: inputValue,
-      detail: e.target.detail.value,
-      description: e.target.description.value,
+    var inputValue = inputElement?.value;
+    const getData = () => {
+      if (e.target.category.value === "home") {
+        return {
+          date: formatDate(dateNow),
+          order: orders,
+          state: 1,
+          userUid: user.uid,
+          category: e.target.category.value,
+          placeId: place,
+          direction: inputValue,
+          detail: e.target.detail.value,
+          description: e.target.description.value,
+          name: restaurant.basic_information.name,
+          total,
+        };
+      } else if (e.target.category.value === "local") {
+        return {
+          date: formatDate(dateNow),
+          order: orders,
+          state: 1,
+          userUid: user.uid,
+          category: e.target.category.value,
+          table: e.target.table.value,
+          description: e.target.description.value,
+          name: restaurant.basic_information.name,
+          total,
+        };
+      } else {
+        return {
+          date: formatDate(dateNow),
+          order: orders,
+          state: 1,
+          userUid: user.uid,
+          direction: restaurant.basic_information.direction,
+          category: e.target.category.value,
+          description: e.target.description.value,
+          name: restaurant.basic_information.name,
+          total,
+        };
+      }
     };
-
+    const docData = getData();
     try {
       const comandasRef = collection(db, "restaurants", id, "comandas");
       const docRef = await addDoc(comandasRef, docData);
@@ -48,6 +77,16 @@ const ConfirmOrder = ({
         uidOrder: docRef.id,
       };
       await setDoc(docRef, updatedDocData);
+      const recordRef = collection(db, "users", user.uid, "record");
+      const { userUid, ...rest } = docData;
+      const docRecordRef = await addDoc(recordRef, rest);
+      const updatedRecordDocData = {
+        ...rest,
+        userUid: user.uid,
+        recordId: docRecordRef.id,
+      };
+      await setDoc(docRef, updatedDocData);
+      await setDoc(docRecordRef, updatedRecordDocData);
       setShowConfirmOrderModal(false);
       setShowOrderSummary(false);
       navigate(`/restaurant/${restaurant.uid}`, { state: { restaurant } });
@@ -123,7 +162,7 @@ const ConfirmOrder = ({
                 htmlFor="price"
                 className="block mb-2 font-bold text-sm text-gray-900 dark:text-white"
               >
-                Total: {total}€
+                Total: {total?.toFixed(2)}€
               </span>
             </div>
 
@@ -145,7 +184,7 @@ const ConfirmOrder = ({
                   A domicilio
                 </option>
                 <option value="pickup">Recogida en local</option>
-                <option value="local">En el local</option>
+                <option value="local">Estoy en una mesa</option>
               </select>
             </div>
             {selectedOptionPlace === "home" && (
@@ -167,17 +206,21 @@ const ConfirmOrder = ({
               </div>
             )}
             {selectedOptionPlace === "pickup" && (
-              <span>{restaurant.basic_information.direction}</span>
+              <span
+                htmlFor="pickup"
+                name="pickup"
+                className="block my-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {restaurant.basic_information.direction}
+              </span>
             )}
             {selectedOptionPlace === "local" && (
-              <>
-                <span
-                  htmlFor="name"
-                  className="block my-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  {restaurant.basic_information.direction}
-                </span>
-              </>
+              <input
+                required
+                className="bg-gray-50 border my-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Nº de mesa."
+                name="table"
+              />
             )}
             <div className="col-span-2">
               <label

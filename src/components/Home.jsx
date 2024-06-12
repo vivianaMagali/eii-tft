@@ -8,7 +8,6 @@ import Header from "./Header";
 const Home = () => {
   const [restaurantList, setRestaurantList] = useState();
   const navigate = useNavigate();
-  // console.log("firebase", firebase);
 
   useEffect(() => {
     const pruebaRef = collection(db, "restaurants");

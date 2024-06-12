@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import RestaurantSearch from "./RestaurantSearch";
 import logo from "../assets/logo-removebg-preview.png";
 import { useNavigate } from "react-router-dom";
+import { FirebaseContext } from "../firebase";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user } = useContext(FirebaseContext);
+
   const goRecord = () => {
-    console.log("/record");
+    navigate(`/${user.uidUser}/record`);
   };
 
   const goProfile = () => {
@@ -34,15 +37,15 @@ const Header = () => {
       </button>
       <button onClick={() => goRecord()}>
         <svg
-          class="h-10 w-10 text-teal-200"
+          className="h-10 w-10 text-teal-200"
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          stroke-width="2"
+          strokeWidth="2"
           stroke="currentColor"
           fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
           {" "}
           <path stroke="none" d="M0 0h24v24H0z" />{" "}
