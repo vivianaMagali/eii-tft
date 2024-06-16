@@ -6,12 +6,7 @@ import MenuCard from "./MenuCard";
 import OrderSummary from "./OrderSummary";
 import ConfirmOrder from "./ConfirmOrder";
 import Header from "./Header";
-
-const RestaurantContext = createContext();
-
-export const useRestaurant = () => {
-  return useContext(RestaurantContext);
-};
+import { RestaurantContext } from "../firebase/context";
 
 const Restaurant = () => {
   const { id } = useParams();
@@ -50,57 +45,61 @@ const Restaurant = () => {
 
   return (
     <div className="flex flex-col">
-      <Header />
-      {showConfirmOrderModal && (
-        <ConfirmOrder
-          orders={orders}
-          setShowConfirmOrderModal={setShowConfirmOrderModal}
-          restaurant={restaurant}
-          setShowOrderSummary={setShowOrderSummary}
-          total={total}
-        />
-      )}
-      <div className="flex flex-row justify-center my-14 px-8">
-        <div className="flex flex-col justify-center">
-          <span className="px-8">Comidas</span>
-          <div className="flex flex-row flex-wrap items-start">
-            {menus?.length > 0 &&
-              menus.map((menu) => (
-                <MenuCard
-                  key={menu.name}
-                  product={menu}
-                  orders={orders}
-                  setOrders={setOrders}
-                  setShowOrderSummary={setShowOrderSummary}
-                />
-              ))}
-          </div>
-          <span className="px-8">Bebidas</span>
-          <div className="flex flex-row flex-wrap items-start">
-            {drinks?.length > 0 &&
-              drinks.map((drink) => (
-                <MenuCard
-                  key={drink.name}
-                  product={drink}
-                  orders={orders}
-                  setOrders={setOrders}
-                  setShowOrderSummary={setShowOrderSummary}
-                />
-              ))}
-          </div>
-        </div>
-        {orders.length > 0 ? (
-          <OrderSummary
-            className="duration-75"
+      <RestaurantContext.Provider
+        value={{ basicInformation: restaurant.basicInformation }}
+      >
+        <Header />
+        {showConfirmOrderModal && (
+          <ConfirmOrder
             orders={orders}
             setShowConfirmOrderModal={setShowConfirmOrderModal}
-            showOrderSummary={showOrderSummary}
+            restaurant={restaurant}
             setShowOrderSummary={setShowOrderSummary}
             total={total}
-            setTotal={setTotal}
           />
-        ) : null}
-      </div>
+        )}
+        <div className="flex flex-row justify-center my-14 px-8">
+          <div className="flex flex-col justify-center">
+            <span className="px-8">Comidas</span>
+            <div className="flex flex-row flex-wrap items-start">
+              {menus?.length > 0 &&
+                menus.map((menu) => (
+                  <MenuCard
+                    key={menu.name}
+                    product={menu}
+                    orders={orders}
+                    setOrders={setOrders}
+                    setShowOrderSummary={setShowOrderSummary}
+                  />
+                ))}
+            </div>
+            <span className="px-8">Bebidas</span>
+            <div className="flex flex-row flex-wrap items-start">
+              {drinks?.length > 0 &&
+                drinks.map((drink) => (
+                  <MenuCard
+                    key={drink.name}
+                    product={drink}
+                    orders={orders}
+                    setOrders={setOrders}
+                    setShowOrderSummary={setShowOrderSummary}
+                  />
+                ))}
+            </div>
+          </div>
+          {orders.length > 0 ? (
+            <OrderSummary
+              className="duration-75"
+              orders={orders}
+              setShowConfirmOrderModal={setShowConfirmOrderModal}
+              showOrderSummary={showOrderSummary}
+              setShowOrderSummary={setShowOrderSummary}
+              total={total}
+              setTotal={setTotal}
+            />
+          ) : null}
+        </div>
+      </RestaurantContext.Provider>
     </div>
   );
 };

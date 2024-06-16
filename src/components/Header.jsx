@@ -1,12 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import RestaurantSearch from "./RestaurantSearch";
 import logo from "../assets/logo-removebg-preview.png";
+import waiter from "../assets/camarero.png";
+import order from "../assets/comida.png";
 import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
+import WaitTime from "./WaitTime";
+import CallToWaiter from "./CallToWaiter";
 
 const Header = () => {
   const navigate = useNavigate();
   const { user } = useContext(FirebaseContext);
+  const [callToWaiter, setCallToWaiter] = useState(false);
+  const [showWaitTime, setShowWaitTime] = useState(false);
 
   const goRecord = () => {
     navigate(`/${user.uidUser}/record`);
@@ -18,8 +24,17 @@ const Header = () => {
 
   return (
     <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
+      {showWaitTime && <WaitTime setShowWaitTime={setShowWaitTime} />}
       <img className="w-16" src={logo} alt="Your Company" />
       <RestaurantSearch />
+      {callToWaiter && <CallToWaiter setCallToWaiter={setCallToWaiter} />}
+      <button onClick={() => setCallToWaiter(true)}>
+        <img src={waiter} alt="icon-waiter" className="h-10 w-10" />
+      </button>
+
+      <button onClick={() => setShowWaitTime(true)}>
+        <img src={order} alt="icon-order" className="h-12 w-12" />
+      </button>
       <button onClick={() => goProfile()}>
         <svg
           className="h-10 w-10 text-teal-200"
