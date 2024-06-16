@@ -40,10 +40,12 @@ const WaitTime = ({ setShowWaitTime }) => {
             </button>
           </div>
         </div>
-        <span>Restaurante: Las Casitas</span>
-        <span>Pedido nº: 54</span>
-        <span>Estado: en preparación</span>
-        <span>Tiempo restante aprox: 15 min</span>
+        <div className="my-2 flex flex-col">
+          <span>Restaurante: Las Casitas</span>
+          <span>Pedido nº: 54</span>
+          <span>Estado: en preparación</span>
+          <span>Tiempo restante aprox: 15 min</span>
+        </div>
       </div>
     </div>
   );
