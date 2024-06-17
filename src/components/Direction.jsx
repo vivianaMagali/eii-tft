@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import PlacesPicker from "@tasiodev/react-places-autocomplete";
 
-const Direction = ({ restaurant }) => {
+const Direction = ({ restaurant, setPlace }) => {
   const [selectedOptionPlace, setSelectedOptionPlace] = useState("home");
-  const [place, setPlace] = useState(null);
+
   return (
     <div className="col-span-2 sm:col-span-1">
       <label

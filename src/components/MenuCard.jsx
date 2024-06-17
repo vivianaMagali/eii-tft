@@ -7,7 +7,7 @@ const MenuCard = ({ product, orders, setOrders, setShowOrderSummary }) => {
     if (orders.length > 0) {
       setShowOrderSummary(true);
     }
-  }, [orders]);
+  }, [orders, setShowOrderSummary]);
 
   const addProduct = () => {
     setQuantity(quantity + 1);

@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router";
 import credencialsFirebase from "./firebase/credentials";
-
+import { collection, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { FirebaseContext } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 
 import Login from "./components/Login";
 import Home from "./components/Home";
@@ -18,12 +17,24 @@ const auth = getAuth(credencialsFirebase);
 function App() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [record, setRecord] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         setUser({ uid: user.uid, ...userDoc.data() });
+        const userDocRef = doc(db, "users", user.uid);
+        const recordCollectionRef = collection(userDocRef, "record");
+
+        const unsubscribeRecord = onSnapshot(
+          recordCollectionRef,
+          (snapshot) => {
+            setRecord(snapshot.docs.map((doc) => doc.data()));
+          },
+        );
+
+        return () => unsubscribeRecord();
       } else {
         setUser(null);
       }
@@ -35,7 +46,7 @@ function App() {
 
   return (
     <div>
-      <FirebaseContext.Provider value={{ user }}>
+      <FirebaseContext.Provider value={{ user: user, record: record }}>
         <Routes>
           <Route
             path="/"

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
-import { collection, addDoc, setDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, getDocs } from "firebase/firestore";
 import { useParams } from "react-router";
-import { formatDate } from "../utils";
+import { formatDate, generateUID, stateOrders } from "../utils";
 import { FirebaseContext } from "../firebase";
 import { db } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import Direction from "./Direction";
 
 const ConfirmOrder = ({
   orders,
+  setOrders,
   setShowConfirmOrderModal,
   restaurant,
   setShowOrderSummary,
@@ -26,12 +27,19 @@ const ConfirmOrder = ({
       ".my-2 .Field_container__t90fB .Field_field__DxK5r input",
     );
     var inputValue = inputElement?.value;
+    const comandasRef = collection(db, "restaurants", id, "comandas");
+    const querySnapshot = await getDocs(comandasRef);
+
+    const orderList = querySnapshot.size;
+    // 5 es el tiempo medio de espera por pedido
+    const waitTime = Math.floor(orderList * 5);
+
     const getData = () => {
       if (e.target.category.value === "home") {
         return {
           date: formatDate(dateNow),
           order: orders,
-          state: 1,
+          state: stateOrders.RECIBIDO,
           userUid: user.uid,
           category: e.target.category.value,
           placeId: place,
@@ -40,36 +48,41 @@ const ConfirmOrder = ({
           description: e.target.description.value,
           name: restaurant.basic_information.name,
           total,
+          orderId: generateUID(),
+          waitTime: waitTime,
         };
       } else if (e.target.category.value === "local") {
         return {
           date: formatDate(dateNow),
           order: orders,
-          state: 1,
+          state: stateOrders.RECIBIDO,
           userUid: user.uid,
           category: e.target.category.value,
           table: e.target.table.value,
           description: e.target.description.value,
           name: restaurant.basic_information.name,
           total,
+          orderId: generateUID(),
+          waitTime: waitTime,
         };
       } else {
         return {
           date: formatDate(dateNow),
           order: orders,
-          state: 1,
+          state: stateOrders.RECIBIDO,
           userUid: user.uid,
           direction: restaurant.basic_information.direction,
           category: e.target.category.value,
           description: e.target.description.value,
           name: restaurant.basic_information.name,
           total,
+          orderId: generateUID(),
+          waitTime: waitTime,
         };
       }
     };
     const docData = getData();
     try {
-      const comandasRef = collection(db, "restaurants", id, "comandas");
       const docRef = await addDoc(comandasRef, docData);
       const updatedDocData = {
         ...docData,
@@ -86,9 +99,10 @@ const ConfirmOrder = ({
       };
       await setDoc(docRef, updatedDocData);
       await setDoc(docRecordRef, updatedRecordDocData);
+      setOrders([]);
       setShowConfirmOrderModal(false);
       setShowOrderSummary(false);
-      navigate(`/restaurant/${restaurant.uid}`, { state: { restaurant } });
+      // navigate(`/restaurant/${restaurant.uid}`, { state: { restaurant } });
     } catch (e) {
       console.error("Error añadiendo el documento: ", e);
     }
@@ -147,7 +161,7 @@ const ConfirmOrder = ({
                       <span> {order.name}</span>
                     </div>
                     <span className="text-gray-600">
-                      {order.amount * order.price}€
+                      {(order.amount * order.price)?.toFixed(2)}€
                     </span>
                   </li>
                   {order.ingredients && (
@@ -164,7 +178,7 @@ const ConfirmOrder = ({
                 Total: {total?.toFixed(2)}€
               </span>
             </div>
-            <Direction restaurant={restaurant} />
+            <Direction restaurant={restaurant} setPlace={setPlace} />
             <div className="flex justify-center">
               <button
                 type="submit"

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import order from "../assets/comida.png";
+import { FirebaseContext } from "../firebase";
+import { getKeyByValue, stateOrders } from "../utils";
 
 const WaitTime = ({ setShowWaitTime }) => {
+  const { record } = useContext(FirebaseContext);
+
   return (
     <div
       id="crud-modal"
@@ -40,12 +44,17 @@ const WaitTime = ({ setShowWaitTime }) => {
             </button>
           </div>
         </div>
-        <div className="my-2 flex flex-col">
-          <span>Restaurante: Las Casitas</span>
-          <span>Pedido nº: 54</span>
-          <span>Estado: en preparación</span>
-          <span>Tiempo restante aprox: 15 min</span>
-        </div>
+        {record.map(
+          (rcd) =>
+            rcd.state !== stateOrders.TERMINADO && (
+              <div className="my-2 flex flex-col">
+                <span>Restaurante: {rcd.name}</span>
+                <span>Pedido: {rcd.orderId}</span>
+                <span>Estado: {getKeyByValue(rcd.state)}</span>
+                <span>Tiempo restante aprox: {rcd.waitTime} min.</span>
+              </div>
+            ),
+        )}
       </div>
     </div>
   );

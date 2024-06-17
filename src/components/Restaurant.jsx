@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useEffect } from "react";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { useLocation, useParams } from "react-router";
 import { db } from "../firebase/firebase";
@@ -52,6 +52,7 @@ const Restaurant = () => {
         {showConfirmOrderModal && (
           <ConfirmOrder
             orders={orders}
+            setOrders={setOrders}
             setShowConfirmOrderModal={setShowConfirmOrderModal}
             restaurant={restaurant}
             setShowOrderSummary={setShowOrderSummary}

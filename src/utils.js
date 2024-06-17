@@ -45,3 +45,26 @@ export const formatDate = (date) => {
   const seconds = String(date.getSeconds()).padStart(2, "0");
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 };
+
+export const generateUID = () => {
+  const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let resultado = "";
+  for (let i = 0; i < 6; i++) {
+    resultado += caracteres.charAt(
+      Math.floor(Math.random() * caracteres.length),
+    );
+  }
+  return resultado;
+};
+
+export const stateOrders = Object.freeze({
+  RECIBIDO: 1,
+  PREPARACIÓN: 2,
+  TERMINADO: 3,
+});
+
+export const getKeyByValue = (value) => {
+  return (
+    Object.keys(stateOrders).find((key) => stateOrders[key] === value) || null
+  );
+};

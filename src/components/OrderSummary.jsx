@@ -32,7 +32,7 @@ const OrderSummary = ({
                   <span> {order.name}</span>
                 </div>
                 <span className="text-gray-600">
-                  {order.amount * order.price}€
+                  {(order.amount * order.price)?.toFixed(2)}€
                 </span>
               </li>
             </ul>

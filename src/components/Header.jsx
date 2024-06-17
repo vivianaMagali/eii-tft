@@ -14,6 +14,10 @@ const Header = () => {
   const [callToWaiter, setCallToWaiter] = useState(false);
   const [showWaitTime, setShowWaitTime] = useState(false);
 
+  const goHome = () => {
+    navigate("/");
+  };
+
   const goRecord = () => {
     navigate(`/${user.uidUser}/record`);
   };
@@ -25,7 +29,9 @@ const Header = () => {
   return (
     <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
       {showWaitTime && <WaitTime setShowWaitTime={setShowWaitTime} />}
-      <img className="w-16" src={logo} alt="Your Company" />
+      <button onClick={() => goHome()}>
+        <img className="w-16" src={logo} alt="Your Company" />
+      </button>
       <RestaurantSearch />
       {callToWaiter && <CallToWaiter setCallToWaiter={setCallToWaiter} />}
       <button onClick={() => setCallToWaiter(true)}>
