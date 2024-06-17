@@ -7,24 +7,29 @@ import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
 import WaitTime from "./WaitTime";
 import CallToWaiter from "./CallToWaiter";
+import Record from "./Record";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user } = useContext(FirebaseContext);
+  const { user, record } = useContext(FirebaseContext);
   const [callToWaiter, setCallToWaiter] = useState(false);
   const [showWaitTime, setShowWaitTime] = useState(false);
+  const [showRecord, setShowRecord] = useState(false);
 
   const goHome = () => {
     navigate("/");
   };
 
-  const goRecord = () => {
-    navigate(`/${user.uidUser}/record`);
-  };
+  // const goRecord = () => {
+  //   // navigate(`/${user.uidUser}/record`);
+  //   setShowRecord(true);
+  // };
 
   const goProfile = () => {
     navigate("/profile");
   };
+
+  console.log("record", record);
 
   return (
     <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
@@ -34,9 +39,15 @@ const Header = () => {
       </button>
       <RestaurantSearch />
       {callToWaiter && <CallToWaiter setCallToWaiter={setCallToWaiter} />}
-      <button onClick={() => setCallToWaiter(true)}>
-        <img src={waiter} alt="icon-waiter" className="h-10 w-10" />
-      </button>
+      {record.length > 0 &&
+        record.map(
+          (rcd) =>
+            rcd.category === "local" && (
+              <button onClick={() => setCallToWaiter(true)}>
+                <img src={waiter} alt="icon-waiter" className="h-10 w-10" />
+              </button>
+            ),
+        )}
 
       <button onClick={() => setShowWaitTime(true)}>
         <img src={order} alt="icon-order" className="h-12 w-12" />
@@ -56,7 +67,8 @@ const Header = () => {
           />
         </svg>
       </button>
-      <button onClick={() => goRecord()}>
+      {showRecord && <Record setShowRecord={setShowRecord} />}
+      <button onClick={() => setShowRecord(true)}>
         <svg
           className="h-10 w-10 text-teal-200"
           width="24"

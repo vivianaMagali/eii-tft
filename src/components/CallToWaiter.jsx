@@ -2,6 +2,13 @@ import React from "react";
 import waiter from "../assets/camarero.png";
 
 const CallToWaiter = ({ setCallToWaiter }) => {
+  const getTheCheck = () => {
+    console.log("traer cuenta");
+  };
+
+  const callTheWaiter = () => {
+    console.log("llamar al camarero");
+  };
   return (
     <div
       id="crud-modal"
@@ -40,10 +47,16 @@ const CallToWaiter = ({ setCallToWaiter }) => {
             </button>
           </div>
           <div className="flex flex-col justify-center items-center p-4 dark:border-gray-600">
-            <button className="my-2  bg-teal-400 p-4 rounded-full">
+            <button
+              className="my-2  bg-teal-400 p-4 rounded-full"
+              onClick={() => getTheCheck()}
+            >
               <span>Traer la cuenta</span>
             </button>
-            <button className="my-2  bg-teal-400 p-4 rounded-full">
+            <button
+              className="my-2  bg-teal-400 p-4 rounded-full"
+              onClick={() => callTheWaiter()}
+            >
               <span>Acercarse a la mesa</span>
             </button>
           </div>
