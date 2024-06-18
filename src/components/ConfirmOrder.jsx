@@ -4,7 +4,6 @@ import { useParams } from "react-router";
 import { formatDate, generateUID, stateOrders } from "../utils";
 import { FirebaseContext } from "../firebase";
 import { db } from "../firebase/firebase";
-import { useNavigate } from "react-router-dom";
 import Direction from "./Direction";
 
 const ConfirmOrder = ({

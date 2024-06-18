@@ -48,6 +48,8 @@ const Login = () => {
           } else {
             navigate("/home");
           }
+        } else {
+          console.log("no entra");
         }
       } catch (error) {
         if (error.code === "auth/user-not-found") {

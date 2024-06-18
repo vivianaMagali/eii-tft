@@ -6,11 +6,13 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
 import logo from "../assets/logo-removebg-preview.png";
 import { db } from "../firebase/firebase";
 
 const ChefPage = () => {
+  const navigate = useNavigate();
   const { user } = useContext(FirebaseContext);
   const [commands, setCommands] = useState([]);
 
@@ -34,8 +36,6 @@ const ChefPage = () => {
   }, [user, user?.uidRestaurant]);
 
   const changeToFinish = async (command) => {
-    console.log(command.uidOrder);
-    console.log(user?.uidRestaurant);
     const docRef = doc(
       db,
       "restaurants",
@@ -57,8 +57,6 @@ const ChefPage = () => {
   };
 
   const changeToPreparing = async (command) => {
-    console.log(command.uidOrder);
-    console.log(user?.uidRestaurant);
     const docRef = doc(
       db,
       "restaurants",
@@ -79,11 +77,29 @@ const ChefPage = () => {
     }
   };
 
+  const goProfile = () => {
+    navigate("/profile");
+  };
+
   return (
     <>
       <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
         <img className="w-16" src={logo} alt="Your Company" />
-        <h1>Comandas</h1>
+        <button onClick={() => goProfile()}>
+          <svg
+            className="h-10 w-10 text-teal-200"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </button>
       </div>
       {commands.length > 0 && (
         <div className="grid grid-cols-2 gap-4">
@@ -93,28 +109,35 @@ const ChefPage = () => {
             </h1>
             {commands.map(
               (command) =>
-                command.state === 1 &&
-                command.order.map((ord) => (
-                  <div className="max-w-sm rounded overflow-hidden shadow-lg mb-10">
-                    <div className="px-6 py-4">
-                      <div className="font-bold text-2xl mb-2">
-                        {ord.amount}x {ord.name}
+                command.state === 1 && (
+                  <div
+                    className="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                    key={command.id}
+                  >
+                    {command.order.map((ord) => (
+                      <div key={ord.id}>
+                        <div className="px-6 py-2 flex flex-col">
+                          <span className="font-bold text-2xl mb-2">
+                            {ord.amount}x {ord.name}
+                          </span>
+                          <span className="text-gray-700 text-xl">
+                            {ord.ingredients}
+                          </span>
+                        </div>
+                        {ord.comment && (
+                          <span className="text-xl">
+                            Comentario: {ord.comment}
+                          </span>
+                        )}
                       </div>
-                      <p className="text-gray-700 text-xl">{ord.ingredients}</p>
-
-                      {ord.comment && (
-                        <span className="text-xl">
-                          Comentario: {ord.comment}
-                        </span>
-                      )}
-                    </div>
+                    ))}
                     <div className="px-3 py-2 bg-teal-300 font-bold flex justify-center rounded">
-                      <button onClick={() => changeToPreparing()}>
+                      <button onClick={() => changeToPreparing(command)}>
                         Aceptar comanda
                       </button>
                     </div>
                   </div>
-                )),
+                ),
             )}
           </div>
           <div className="flex flex-col">
@@ -123,31 +146,35 @@ const ChefPage = () => {
             </h1>
             {commands.map(
               (command) =>
-                command.state === 2 &&
-                command.order.map((ord, index) => (
+                command.state === 2 && (
                   <div
-                    key={command.uid}
                     className="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                    key={command.id}
                   >
-                    <div className="px-6 py-4">
-                      <div className="font-bold text-2xl mb-2">
-                        {ord.amount}x {ord.name}
+                    {command.order.map((ord) => (
+                      <div key={ord.id}>
+                        <div className="px-6 py-2 flex flex-col">
+                          <span className="font-bold text-2xl mb-2">
+                            {ord.amount}x {ord.name}
+                          </span>
+                          <span className="text-gray-700 text-xl">
+                            {ord.ingredients}
+                          </span>
+                        </div>
+                        {ord.comment && (
+                          <span className="text-xl">
+                            Comentario: {ord.comment}
+                          </span>
+                        )}
                       </div>
-                      <p className="text-gray-700 text-xl">{ord.ingredients}</p>
-
-                      {ord.comment && (
-                        <span className="text-xl">
-                          Comentario: {ord.comment}
-                        </span>
-                      )}
-                    </div>
+                    ))}
                     <div className="px-3 py-2 bg-green-300 font-bold flex justify-center rounded">
                       <button onClick={() => changeToFinish(command)}>
                         Terminar comanda
                       </button>
                     </div>
                   </div>
-                )),
+                ),
             )}
           </div>
         </div>
