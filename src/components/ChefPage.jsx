@@ -1,5 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  doc,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
 import { FirebaseContext } from "../firebase";
 import logo from "../assets/logo-removebg-preview.png";
 import { db } from "../firebase/firebase";
@@ -27,7 +33,52 @@ const ChefPage = () => {
     };
   }, [user, user?.uidRestaurant]);
 
-  console.log("commands", commands);
+  const changeToFinish = async (command) => {
+    console.log(command.uidOrder);
+    console.log(user?.uidRestaurant);
+    const docRef = doc(
+      db,
+      "restaurants",
+      user?.uidRestaurant,
+      "comandas",
+      command.uidOrder,
+    );
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      try {
+        await updateDoc(docRef, {
+          state: 3,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const changeToPreparing = async (command) => {
+    console.log(command.uidOrder);
+    console.log(user?.uidRestaurant);
+    const docRef = doc(
+      db,
+      "restaurants",
+      user?.uidRestaurant,
+      "comandas",
+      command.uidOrder,
+    );
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      try {
+        await updateDoc(docRef, {
+          state: 2,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
@@ -43,13 +94,13 @@ const ChefPage = () => {
             {commands.map(
               (command) =>
                 command.state === 1 &&
-                command.order.map((ord, index) => (
-                  <div class="max-w-sm rounded overflow-hidden shadow-lg mb-10">
-                    <div class="px-6 py-4">
-                      <div class="font-bold text-2xl mb-2">
+                command.order.map((ord) => (
+                  <div className="max-w-sm rounded overflow-hidden shadow-lg mb-10">
+                    <div className="px-6 py-4">
+                      <div className="font-bold text-2xl mb-2">
                         {ord.amount}x {ord.name}
                       </div>
-                      <p class="text-gray-700 text-xl">{ord.ingredients}</p>
+                      <p className="text-gray-700 text-xl">{ord.ingredients}</p>
 
                       {ord.comment && (
                         <span className="text-xl">
@@ -57,8 +108,10 @@ const ChefPage = () => {
                         </span>
                       )}
                     </div>
-                    <div class="px-3 py-2 bg-teal-300 font-bold flex justify-center rounded">
-                      <button>Aceptar comanda</button>
+                    <div className="px-3 py-2 bg-teal-300 font-bold flex justify-center rounded">
+                      <button onClick={() => changeToPreparing()}>
+                        Aceptar comanda
+                      </button>
                     </div>
                   </div>
                 )),
@@ -72,12 +125,15 @@ const ChefPage = () => {
               (command) =>
                 command.state === 2 &&
                 command.order.map((ord, index) => (
-                  <div class="max-w-sm rounded overflow-hidden shadow-lg mb-10">
-                    <div class="px-6 py-4">
-                      <div class="font-bold text-2xl mb-2">
+                  <div
+                    key={command.uid}
+                    className="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                  >
+                    <div className="px-6 py-4">
+                      <div className="font-bold text-2xl mb-2">
                         {ord.amount}x {ord.name}
                       </div>
-                      <p class="text-gray-700 text-xl">{ord.ingredients}</p>
+                      <p className="text-gray-700 text-xl">{ord.ingredients}</p>
 
                       {ord.comment && (
                         <span className="text-xl">
@@ -85,8 +141,10 @@ const ChefPage = () => {
                         </span>
                       )}
                     </div>
-                    <div class="px-3 py-2 bg-green-300 font-bold flex justify-center rounded">
-                      <button>Terminar comanda</button>
+                    <div className="px-3 py-2 bg-green-300 font-bold flex justify-center rounded">
+                      <button onClick={() => changeToFinish(command)}>
+                        Terminar comanda
+                      </button>
                     </div>
                   </div>
                 )),
