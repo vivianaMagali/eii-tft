@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "../assets/logo-removebg-preview.png";
 import { useNavigate } from "react-router-dom";
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getFirestore, getDoc } from "firebase/firestore";
 
 import appFirebase from "../firebase/credentials";
 import {
@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 import { db } from "../firebase/firebase";
 const auth = getAuth(appFirebase);
+const firestore = getFirestore();
 
 const Login = () => {
   const [registering, setRegistering] = useState(false);
@@ -26,7 +27,28 @@ const Login = () => {
       try {
         await signInWithEmailAndPassword(auth, email.value, password.value);
         setError(undefined);
-        navigate("/home");
+        //mirar que role tiene el usuario para redireccionar a la pagina concreta
+        const user = auth.currentUser;
+        const userDocRef = doc(firestore, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const userRole = userData.role;
+
+          // Redirect based on user role
+          if (userRole === "Administrador") {
+            navigate("/admin");
+          } else if (userRole === "Camarero") {
+            navigate("/waiter");
+          } else if (userRole === "Cajero") {
+            navigate("/cashier");
+          } else if (userRole === "Cocinero") {
+            navigate("/chef");
+          } else {
+            navigate("/home");
+          }
+        }
       } catch (error) {
         if (error.code === "auth/user-not-found") {
           setError("Error: El usuario es incorrecto");
@@ -48,7 +70,6 @@ const Login = () => {
           email: email.value,
           name: name.value,
           phone: phone.value,
-          // uidUser: user.uid,
         };
         const userRef = doc(db, "users", user.uid);
         await setDoc(userRef, userData);

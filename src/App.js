@@ -5,6 +5,10 @@ import { collection, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { FirebaseContext } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+import WaiterPage from "./components/WaiterPage";
+import ChefPage from "./components/ChefPage";
+import CashierPage from "./components/CashierPage";
+import AdminPage from "./components/AdminPage";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Restaurant from "./components/Restaurant";
@@ -42,7 +46,7 @@ function App() {
     });
 
     return unsubscribe;
-  }, [auth, db]);
+  }, []);
 
   return (
     <div>
@@ -52,6 +56,10 @@ function App() {
             path="/"
             element={user ? <Home email={user.email} /> : <Login />}
           />
+          <Route path="/waiter" element={<WaiterPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/cashier" element={<CashierPage />} />
+          <Route path="/chef" element={<ChefPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />

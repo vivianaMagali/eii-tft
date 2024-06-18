@@ -18,7 +18,6 @@ const ConfirmOrder = ({
   const [place, setPlace] = useState(null);
   const { id } = useParams();
   const { user } = useContext(FirebaseContext);
-  const navigate = useNavigate();
 
   const saveOrder = async (e) => {
     e.preventDefault();
@@ -102,7 +101,6 @@ const ConfirmOrder = ({
       setOrders([]);
       setShowConfirmOrderModal(false);
       setShowOrderSummary(false);
-      // navigate(`/restaurant/${restaurant.uid}`, { state: { restaurant } });
     } catch (e) {
       console.error("Error añadiendo el documento: ", e);
     }
