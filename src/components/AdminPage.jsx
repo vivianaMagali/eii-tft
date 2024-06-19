@@ -42,6 +42,8 @@ const AdminPage = () => {
     navigate("/profile");
   };
 
+  console.log("inventory", inventory);
+
   return (
     <>
       <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
