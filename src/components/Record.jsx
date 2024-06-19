@@ -15,7 +15,6 @@ const Record = ({ setShowRecord }) => {
         <div className="relative w-full h-5/6 bg-white rounded-lg dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex justify-center items-center">
-              {/* <img src={waiter} alt="icon-waiter" className="h-10 w-10 mr-1" /> */}
               <span>Historial</span>
             </h3>
             <button
