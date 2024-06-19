@@ -20,7 +20,6 @@ const auth = getAuth(credencialsFirebase);
 
 function App() {
   const [user, setUser] = useState();
-  // const [loading, setLoading] = useState(true);
   const [record, setRecord] = useState([]);
 
   useEffect(() => {
@@ -42,7 +41,6 @@ function App() {
       } else {
         setUser(null);
       }
-      // setLoading(false);
     });
 
     return unsubscribe;

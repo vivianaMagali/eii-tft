@@ -38,6 +38,7 @@ const Header = () => {
         <>
           <RestaurantSearch />
           {callToWaiter && <CallToWaiter setCallToWaiter={setCallToWaiter} />}
+          {/* hay que cambiar esto porque sino sale muchas veces el icono del camarero */}
           {record.length > 0 &&
             record.map(
               (rcd) =>

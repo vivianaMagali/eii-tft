@@ -48,6 +48,7 @@ const ConfirmOrder = ({
           total,
           orderId: generateUID(),
           waitTime: waitTime,
+          paymentStatus: false,
         };
       } else if (e.target.category.value === "local") {
         return {
@@ -62,6 +63,7 @@ const ConfirmOrder = ({
           total,
           orderId: generateUID(),
           waitTime: waitTime,
+          paymentStatus: false,
         };
       } else {
         return {
@@ -76,6 +78,7 @@ const ConfirmOrder = ({
           total,
           orderId: generateUID(),
           waitTime: waitTime,
+          paymentStatus: false,
         };
       }
     };
