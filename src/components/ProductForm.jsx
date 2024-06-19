@@ -1,11 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import {
+  collection,
+  addDoc,
+  setDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../firebase/firebase";
+import { FirebaseContext } from "../firebase";
 
 const ProductForm = ({ setShowForm }) => {
+  const { user } = useContext(FirebaseContext);
   const [selectedOptionProductType, setSelectedOptionProductType] =
     useState("main");
 
-  const handleSubmit = () => {
-    console.log("crear producto");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, ingredients, price, amount, producer, type } = e.target;
+    const newProduct = {
+      name: name.value,
+      ingredients: ingredients.value,
+      price: price.value,
+      amountInventory: amount.value,
+      producer: producer.value,
+      type: type.value,
+    };
+    try {
+      const inventoryRef = collection(
+        db,
+        "restaurants",
+        user.uidRestaurant,
+        "inventory",
+      );
+      const docRef = await addDoc(inventoryRef, newProduct);
+      await updateDoc(docRef, { uidInventory: docRef.id });
+    } catch (error) {
+      console.log("error", error);
+    }
   };
   return (
     <div
@@ -47,100 +78,91 @@ const ProductForm = ({ setShowForm }) => {
             className="m-4 flex flex-col justify-center items-center"
             onSubmit={handleSubmit}
           >
-            <div className="w-full">
+            <div className="w-full mb-1">
               <label
                 htmlFor="name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Nombre*
               </label>
-              <div className="mt-2">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                required
+                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+              />
             </div>
-            <div className="w-full">
+            <div className="w-full mb-1">
               <label
                 htmlFor="ingredients"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Ingredientes*
               </label>
-              <div className="mt-2">
-                <input
-                  id="ingredients"
-                  name="ingredients"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              <input
+                id="ingredients"
+                name="ingredients"
+                type="text"
+                autoComplete="name"
+                required
+                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+              />
             </div>
-            <div className="w-full">
+            <div className="w-full mb-1">
               <label
                 htmlFor="price"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Precio*
               </label>
-              <div className="mt-2">
-                <input
-                  id="price"
-                  name="price"
-                  type="number"
-                  autoComplete="price"
-                  required
-                  className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                autoComplete="price"
+                required
+                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+              />
             </div>
-            <div className="w-full">
+            <div className="w-full mb-1">
               <label
                 htmlFor="amount"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Cantidad*
               </label>
-              <div className="mt-2">
-                <input
-                  id="amount"
-                  name="amount"
-                  type="number"
-                  autoComplete="amount"
-                  required
-                  className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              <input
+                id="amount"
+                name="amount"
+                type="number"
+                autoComplete="amount"
+                required
+                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+              />
             </div>
-            <div className="w-full">
+            <div className="w-full mb-1">
               <label
                 htmlFor="producer"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Productor*
               </label>
-              <div className="mt-2">
-                <input
-                  id="producer"
-                  name="producer"
-                  type="text"
-                  autoComplete="producer"
-                  required
-                  className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              <input
+                id="producer"
+                name="producer"
+                type="text"
+                autoComplete="producer"
+                required
+                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+              />
             </div>
-            <div className="w-full">
+            <div className="w-full mb-1">
               <label
                 htmlFor="type"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block text-sm font-medium text-gray-900 dark:text-white"
               >
                 Tipo de producto
               </label>
@@ -153,6 +175,8 @@ const ProductForm = ({ setShowForm }) => {
               >
                 <option value="starter">Entrante</option>
                 <option value="main">Principal</option>
+                <option value="main">Pizza</option>
+                <option value="main">Hamburguesa</option>
                 <option value="drink">Bebida</option>
               </select>
             </div>
