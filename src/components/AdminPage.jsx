@@ -20,6 +20,8 @@ const AdminPage = () => {
   const [inventory, setInventory] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [productSelected, setProductSelected] = useState();
+  const [menus, setMenus] = useState([]);
+  const [drinks, setDrinks] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -35,8 +37,24 @@ const AdminPage = () => {
       setInventory(snapshot.docs.map((doc) => doc.data()));
     });
 
+    const restaurantDocRef = doc(db, "restaurants", user?.uidRestaurant);
+
+    const menuCollectionRef = collection(restaurantDocRef, "menu");
+
+    const unsubscribeMenu = onSnapshot(menuCollectionRef, (snapshot) => {
+      setMenus(snapshot.docs.map((doc) => doc.data()));
+    });
+
+    const drinksCollectionRef = collection(restaurantDocRef, "drinks");
+
+    const unsubscribeDrinks = onSnapshot(drinksCollectionRef, (snapshot) => {
+      setDrinks(snapshot.docs.map((doc) => doc.data()));
+    });
+
     return () => {
       unsubscribeInventory();
+      unsubscribeMenu();
+      unsubscribeDrinks();
     };
   }, [user]);
 
@@ -44,13 +62,13 @@ const AdminPage = () => {
     navigate("/profile");
   };
 
-  const deleteProduct = async (uidInventory) => {
+  const deleteProduct = async (nameCollection, uid) => {
     const docRef = doc(
       db,
       "restaurants",
       user?.uidRestaurant,
-      "inventory",
-      uidInventory,
+      nameCollection,
+      uid,
     );
     try {
       await deleteDoc(docRef);
@@ -79,26 +97,26 @@ const AdminPage = () => {
           </svg>
         </button>
       </div>
-      <div className="flex justify-end mt-5 mx-5">
-        <button
-          onClick={() => {
-            setShowForm(true);
-            setProductSelected(undefined);
-          }}
-          className="px-2 py-2 text-white rounded font-bold bg-teal-600"
-        >
-          Añadir producto
-        </button>
-        {showForm && (
-          <ProductForm
-            setShowForm={setShowForm}
-            productSelected={productSelected}
-          ></ProductForm>
-        )}
-      </div>
       <InventoryChart inventoryData={inventory}></InventoryChart>
       <div className="m-5 flex flex-col justify-center items-center">
-        <h1 className="font-bold text-xl m-5">Lista del inventario</h1>
+        <div className="mt-5 mx-5">
+          <button
+            onClick={() => {
+              setShowForm(true);
+              setProductSelected(undefined);
+            }}
+            className="px-2 py-2 text-white rounded font-bold bg-teal-600"
+          >
+            Añadir producto al inventario
+          </button>
+          {showForm && (
+            <ProductForm
+              setShowForm={setShowForm}
+              productSelected={productSelected}
+            ></ProductForm>
+          )}
+        </div>
+        <h1 className="font-bold text-xl m-5">Listado del inventario</h1>
         <table className="table-auto bg-white shadow-md rounded-lg mx-5 p-5 w-full">
           <thead className="">
             <tr>
@@ -122,7 +140,9 @@ const AdminPage = () => {
                 <td>{product.type}</td>
                 <td>{product.producer}</td>
                 <td>
-                  <button onClick={() => deleteProduct(product.uid)}>
+                  <button
+                    onClick={() => deleteProduct("inventory", product.uid)}
+                  >
                     <svg
                       className="h-6 w-6 text-teal-500"
                       fill="none"
@@ -143,6 +163,144 @@ const AdminPage = () => {
                     onClick={() => {
                       setShowForm(true);
                       setProductSelected(product);
+                    }}
+                  >
+                    <svg
+                      className="h-5 w-5 text-teal-500"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {" "}
+                      <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />{" "}
+                      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="mt-5 mx-5">
+          <button
+            onClick={() => {
+              setShowForm(true);
+              setProductSelected(undefined);
+            }}
+            className="px-2 py-2 text-white rounded font-bold bg-teal-600"
+          >
+            Añadir producto a la carta
+          </button>
+          {showForm && (
+            <ProductForm
+              setShowForm={setShowForm}
+              productSelected={productSelected}
+            ></ProductForm>
+          )}
+        </div>
+        <h1 className="font-bold text-xl m-5">Carta disponible</h1>
+        <table className="table-auto bg-white shadow-md rounded-lg mx-5 p-5 w-full">
+          <thead className="">
+            <tr>
+              <th></th>
+              <th className="">Nombre</th>
+              <th className="">Ingredientes</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {menus.map((menu) => (
+              <tr key={menu.uid}>
+                <td>
+                  <img src={menu.img} className="w-14 h-12" alt="img-product" />
+                </td>
+                <td>{menu.name}</td>
+                <td>{menu.ingredients}</td>
+                <td>{menu.price}€</td>
+                <td>
+                  <button onClick={() => deleteProduct("menus", menu.uid)}>
+                    <svg
+                      className="h-6 w-6 text-teal-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    onClick={() => {
+                      setShowForm(true);
+                      setProductSelected(menu);
+                    }}
+                  >
+                    <svg
+                      className="h-5 w-5 text-teal-500"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {" "}
+                      <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />{" "}
+                      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {drinks.map((drink) => (
+              <tr key={drink.uid}>
+                <td>
+                  <img
+                    src={drink.img}
+                    className="w-14 h-12"
+                    alt="img-product"
+                  />
+                </td>
+                <td>{drink.name}</td>
+                <td>{drink.ingredients}</td>
+                <td>{drink.price}€</td>
+                <td>
+                  <button onClick={() => deleteProduct("drinks", drink.uid)}>
+                    <svg
+                      className="h-6 w-6 text-teal-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    onClick={() => {
+                      setShowForm(true);
+                      setProductSelected(drink);
                     }}
                   >
                     <svg
