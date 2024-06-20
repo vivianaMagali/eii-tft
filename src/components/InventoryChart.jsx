@@ -49,17 +49,9 @@ const InventoryChart = ({ inventoryData }) => {
     }
   }, [inventoryData]);
 
-  const deleteProduct = (uidInventory) => {
-    console.log("uidInventory", uidInventory);
-  };
-
-  const updateProduct = (product) => {
-    console.log("product", product);
-  };
-
   return (
     <>
-      <div className="flex justify-center font-bold mt-10">
+      <div className="flex justify-center text-xl font-bold mt-10">
         <h1>Gráfica de inventario de productos</h1>
       </div>
 
@@ -69,38 +61,6 @@ const InventoryChart = ({ inventoryData }) => {
           options={{ responsive: true, maintainAspectRatio: false }}
         />
       </div>
-      <table className="table-auto p-4 bg-white shadow-md rounded-lg mx-5">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Ingredientes</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-            <th>Tipo</th>
-            <th>Productor</th>
-            <th>Eliminar</th>
-            <th>Modificar</th>
-          </tr>
-        </thead>
-        <tbody>
-          {inventoryData.map((product) => (
-            <tr>
-              <td>{product.name}</td>
-              <td>{product.ingredients}</td>
-              <td>{product.price}</td>
-              <td>{product.amountInventory}</td>
-              <td>{product.type}</td>
-              <td>{product.producer}</td>
-              <td>
-                <button onClick={deleteProduct(product.uid)}>Eliminar</button>
-              </td>
-              <td>
-                <button onClick={updateProduct(product)}>Modificar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </>
   );
 };

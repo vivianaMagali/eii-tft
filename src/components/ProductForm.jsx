@@ -1,30 +1,34 @@
 import React, { useState, useContext } from "react";
-import {
-  collection,
-  addDoc,
-  setDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { FirebaseContext } from "../firebase";
 
-const ProductForm = ({ setShowForm }) => {
+const ProductForm = ({ setShowForm, productSelected }) => {
   const { user } = useContext(FirebaseContext);
-  const [selectedOptionProductType, setSelectedOptionProductType] =
-    useState("main");
+  const [selectedOptionProductType, setSelectedOptionProductType] = useState(
+    productSelected ? productSelected?.type : "main",
+  );
+
+  const [formData, setFormData] = useState({
+    name: productSelected?.name,
+    ingredients: productSelected?.ingredients,
+    price: productSelected?.price,
+    amountInventory: productSelected?.amountInventory,
+    producer: productSelected?.producer,
+    type: productSelected?.type,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const isEditMode = !!productSelected;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, ingredients, price, amount, producer, type } = e.target;
-    const newProduct = {
-      name: name.value,
-      ingredients: ingredients.value,
-      price: price.value,
-      amountInventory: amount.value,
-      producer: producer.value,
-      type: type.value,
-    };
     try {
       const inventoryRef = collection(
         db,
@@ -32,12 +36,19 @@ const ProductForm = ({ setShowForm }) => {
         user.uidRestaurant,
         "inventory",
       );
-      const docRef = await addDoc(inventoryRef, newProduct);
-      await updateDoc(docRef, { uidInventory: docRef.id });
+      if (isEditMode) {
+        const docRef = doc(inventoryRef, productSelected.uidInventory);
+        await updateDoc(docRef, formData);
+      } else {
+        const docRef = await addDoc(inventoryRef, formData);
+        await updateDoc(docRef, { uidInventory: docRef.id });
+      }
+      setShowForm(false);
     } catch (error) {
       console.log("error", error);
     }
   };
+
   return (
     <div
       id="crud-modal"
@@ -91,6 +102,8 @@ const ProductForm = ({ setShowForm }) => {
                 name="name"
                 type="text"
                 autoComplete="name"
+                defaultValue={productSelected?.name}
+                onChange={handleInputChange}
                 required
                 className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
               />
@@ -100,14 +113,15 @@ const ProductForm = ({ setShowForm }) => {
                 htmlFor="ingredients"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Ingredientes*
+                Ingredientes
               </label>
               <input
                 id="ingredients"
                 name="ingredients"
                 type="text"
                 autoComplete="name"
-                required
+                onChange={handleInputChange}
+                defaultValue={productSelected?.ingredients}
                 className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -118,15 +132,20 @@ const ProductForm = ({ setShowForm }) => {
               >
                 Precio*
               </label>
-              <input
-                id="price"
-                name="price"
-                type="number"
-                step="0.01"
-                autoComplete="price"
-                required
-                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-              />
+              <div className="flex items-center">
+                <input
+                  id="price"
+                  name="price"
+                  type="number"
+                  step="0.01"
+                  autoComplete="price"
+                  onChange={handleInputChange}
+                  defaultValue={productSelected?.price}
+                  required
+                  className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+                />
+                <span>€</span>
+              </div>
             </div>
             <div className="w-full mb-1">
               <label
@@ -140,6 +159,8 @@ const ProductForm = ({ setShowForm }) => {
                 name="amount"
                 type="number"
                 autoComplete="amount"
+                onChange={handleInputChange}
+                defaultValue={productSelected?.amountInventory}
                 required
                 className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
               />
@@ -156,6 +177,8 @@ const ProductForm = ({ setShowForm }) => {
                 name="producer"
                 type="text"
                 autoComplete="producer"
+                onChange={handleInputChange}
+                defaultValue={productSelected?.producer}
                 required
                 className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
               />
@@ -171,7 +194,7 @@ const ProductForm = ({ setShowForm }) => {
                 id="type"
                 name="type"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                value={selectedOptionProductType}
+                defaultValue={selectedOptionProductType}
                 onChange={(e) => setSelectedOptionProductType(e.target.value)}
               >
                 <option value="starter">Entrante</option>
@@ -185,7 +208,7 @@ const ProductForm = ({ setShowForm }) => {
               type="submit"
               className="flex justify-center rounded-md bg-teal-600 m-3 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
             >
-              Añadir producto
+              {isEditMode ? "Actualizar producto" : "Añadir producto"}
             </button>
           </form>
         </div>

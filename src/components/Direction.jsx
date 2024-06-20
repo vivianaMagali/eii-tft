@@ -27,7 +27,6 @@ const Direction = ({ restaurant, setPlace }) => {
       {selectedOptionPlace === "home" && (
         <div className="my-2">
           <PlacesPicker
-            id="prueba"
             gMapsKey="AIzaSyDbKaQl6IEo_hLQ-qBLV-uPEEaIvbe8ULk"
             onChange={setPlace}
             placeholder="Busca una dirección..."
