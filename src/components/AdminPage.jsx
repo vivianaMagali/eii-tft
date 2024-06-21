@@ -22,6 +22,7 @@ const AdminPage = () => {
   const [productSelected, setProductSelected] = useState();
   const [menus, setMenus] = useState([]);
   const [drinks, setDrinks] = useState([]);
+  const [collectionSelected, setCollection] = useState();
 
   useEffect(() => {
     if (!user) return;
@@ -104,6 +105,7 @@ const AdminPage = () => {
             onClick={() => {
               setShowForm(true);
               setProductSelected(undefined);
+              setCollection("inventory");
             }}
             className="px-2 py-2 text-white rounded font-bold bg-teal-600"
           >
@@ -113,6 +115,7 @@ const AdminPage = () => {
             <ProductForm
               setShowForm={setShowForm}
               productSelected={productSelected}
+              collectionSelected={collectionSelected}
             ></ProductForm>
           )}
         </div>
@@ -132,11 +135,11 @@ const AdminPage = () => {
           </thead>
           <tbody>
             {inventory.map((product) => (
-              <tr key={product.uidInventory}>
+              <tr key={product.uid}>
                 <td>{product.name}</td>
                 <td>{product.ingredients}</td>
                 <td>{product.price}</td>
-                <td>{product.amountInventory}</td>
+                <td>{product.amount}</td>
                 <td>{product.type}</td>
                 <td>{product.producer}</td>
                 <td>
@@ -162,6 +165,7 @@ const AdminPage = () => {
                   <button
                     onClick={() => {
                       setShowForm(true);
+                      setCollection("inventory");
                       setProductSelected(product);
                     }}
                   >
@@ -192,6 +196,7 @@ const AdminPage = () => {
             onClick={() => {
               setShowForm(true);
               setProductSelected(undefined);
+              setCollection("menu");
             }}
             className="px-2 py-2 text-white rounded font-bold bg-teal-600"
           >
@@ -201,6 +206,7 @@ const AdminPage = () => {
             <ProductForm
               setShowForm={setShowForm}
               productSelected={productSelected}
+              collectionSelected={collectionSelected}
             ></ProductForm>
           )}
         </div>
@@ -218,13 +224,13 @@ const AdminPage = () => {
             {menus.map((menu) => (
               <tr key={menu.uid}>
                 <td>
-                  <img src={menu.img} className="w-14 h-12" alt="img-product" />
+                  <img src={menu.img} className="w-16" alt="img-product" />
                 </td>
                 <td>{menu.name}</td>
                 <td>{menu.ingredients}</td>
                 <td>{menu.price}€</td>
                 <td>
-                  <button onClick={() => deleteProduct("menus", menu.uid)}>
+                  <button onClick={() => deleteProduct("menu", menu.uid)}>
                     <svg
                       className="h-6 w-6 text-teal-500"
                       fill="none"
@@ -245,6 +251,7 @@ const AdminPage = () => {
                     onClick={() => {
                       setShowForm(true);
                       setProductSelected(menu);
+                      setCollection("menu");
                     }}
                   >
                     <svg
@@ -270,11 +277,7 @@ const AdminPage = () => {
             {drinks.map((drink) => (
               <tr key={drink.uid}>
                 <td>
-                  <img
-                    src={drink.img}
-                    className="w-14 h-12"
-                    alt="img-product"
-                  />
+                  <img src={drink.img} className="w-14" alt="img-product" />
                 </td>
                 <td>{drink.name}</td>
                 <td>{drink.ingredients}</td>
@@ -301,6 +304,7 @@ const AdminPage = () => {
                     onClick={() => {
                       setShowForm(true);
                       setProductSelected(drink);
+                      setCollection("drinks");
                     }}
                   >
                     <svg

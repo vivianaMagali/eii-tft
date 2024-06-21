@@ -34,7 +34,7 @@ const InventoryChart = ({ inventoryData }) => {
   useEffect(() => {
     if (inventoryData) {
       const labels = inventoryData.map((item) => item.name);
-      const data = inventoryData.map((item) => item.amountInventory);
+      const data = inventoryData.map((item) => item.amount);
 
       setChartData({
         labels,

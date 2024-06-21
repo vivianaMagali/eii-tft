@@ -1,47 +1,104 @@
 import React, { useState, useContext } from "react";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { db, storage } from "../firebase/firebase";
 import { FirebaseContext } from "../firebase";
+import { getDownloadURL, uploadBytes, ref } from "firebase/storage";
 
-const ProductForm = ({ setShowForm, productSelected }) => {
+const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
   const { user } = useContext(FirebaseContext);
   const [selectedOptionProductType, setSelectedOptionProductType] = useState(
     productSelected ? productSelected?.type : "main",
   );
 
-  const [formData, setFormData] = useState({
+  const objectInventory = {
     name: productSelected?.name,
     ingredients: productSelected?.ingredients,
     price: productSelected?.price,
-    amountInventory: productSelected?.amountInventory,
+    amount: productSelected?.amount,
     producer: productSelected?.producer,
     type: productSelected?.type,
-  });
+  };
+
+  const objectMenu = {
+    name: productSelected?.name,
+    ingredients: productSelected?.ingredients,
+    price: productSelected?.price,
+    img: productSelected?.img,
+  };
+
+  const objectDrink = {
+    name: productSelected?.name,
+    price: productSelected?.price,
+    img: productSelected?.img,
+  };
+
+  const defaultValueForm = () => {
+    if (collectionSelected === "inventory") {
+      return objectInventory;
+    } else if (collectionSelected === "drinks") {
+      return objectDrink;
+    } else if (collectionSelected === "menu") {
+      return objectMenu;
+    }
+  };
+
+  const [formData, setFormData] = useState(defaultValueForm());
+
+  const uploadImage = async (image) => {
+    const imageRef = ref(storage, image.name);
+    try {
+      const snapshot = await uploadBytes(imageRef, image);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      // const url = await getDownloadURL(imageRef);
+      // setFormData((prevData) => ({
+      //   ...prevData,
+      //   img: url,
+      // }));
+      return downloadURL;
+    } catch (error) {
+      console.log("Upload failed", error);
+    }
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, files } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: type === "file" ? URL.createObjectURL(files[0]) : value,
     }));
   };
   const isEditMode = !!productSelected;
-
+  console.log("formdata", formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const inventoryRef = collection(
+      const collectionRef = collection(
         db,
         "restaurants",
         user.uidRestaurant,
-        "inventory",
+        collectionSelected,
       );
       if (isEditMode) {
-        const docRef = doc(inventoryRef, productSelected.uidInventory);
+        const docRef = doc(collectionRef, productSelected.uid);
         await updateDoc(docRef, formData);
       } else {
-        const docRef = await addDoc(inventoryRef, formData);
-        await updateDoc(docRef, { uidInventory: docRef.id });
+        const collectionRef = collection(
+          db,
+          "restaurants",
+          user.uidRestaurant,
+          collectionSelected,
+        );
+
+        const docRef = await addDoc(collectionRef, formData);
+        if (collectionSelected === "inventory") {
+          await updateDoc(docRef, { uid: docRef.id });
+        } else {
+          await updateDoc(docRef, {
+            uid: docRef.id,
+            img: uploadImage(formData?.img),
+          });
+        }
       }
       setShowForm(false);
     } catch (error) {
@@ -60,7 +117,9 @@ const ProductForm = ({ setShowForm, productSelected }) => {
         <div className="relative w-full h-5/6 bg-white rounded-lg dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              <span>Producto Nuevo</span>
+              <span>
+                {isEditMode ? "Modificar producto" : "Añadir Producto"}
+              </span>
             </h3>
             <button
               type="button"
@@ -108,23 +167,26 @@ const ProductForm = ({ setShowForm, productSelected }) => {
                 className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
               />
             </div>
-            <div className="w-full mb-1">
-              <label
-                htmlFor="ingredients"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Ingredientes
-              </label>
-              <input
-                id="ingredients"
-                name="ingredients"
-                type="text"
-                autoComplete="name"
-                onChange={handleInputChange}
-                defaultValue={productSelected?.ingredients}
-                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-              />
-            </div>
+            {collectionSelected !== "drinks" && (
+              <div className="w-full mb-1">
+                <label
+                  htmlFor="ingredients"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Ingredientes
+                </label>
+                <input
+                  id="ingredients"
+                  name="ingredients"
+                  type="text"
+                  autoComplete="name"
+                  onChange={handleInputChange}
+                  defaultValue={productSelected?.ingredients}
+                  className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            )}
+
             <div className="w-full mb-1">
               <label
                 htmlFor="price"
@@ -147,63 +209,91 @@ const ProductForm = ({ setShowForm, productSelected }) => {
                 <span>€</span>
               </div>
             </div>
-            <div className="w-full mb-1">
-              <label
-                htmlFor="amount"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Cantidad*
-              </label>
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                autoComplete="amount"
-                onChange={handleInputChange}
-                defaultValue={productSelected?.amountInventory}
-                required
-                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-            <div className="w-full mb-1">
-              <label
-                htmlFor="producer"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Productor*
-              </label>
-              <input
-                id="producer"
-                name="producer"
-                type="text"
-                autoComplete="producer"
-                onChange={handleInputChange}
-                defaultValue={productSelected?.producer}
-                required
-                className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-            <div className="w-full mb-1">
-              <label
-                htmlFor="type"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Tipo de producto
-              </label>
-              <select
-                id="type"
-                name="type"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                defaultValue={selectedOptionProductType}
-                onChange={(e) => setSelectedOptionProductType(e.target.value)}
-              >
-                <option value="starter">Entrante</option>
-                <option value="main">Principal</option>
-                <option value="main">Pizza</option>
-                <option value="main">Hamburguesa</option>
-                <option value="drink">Bebida</option>
-              </select>
-            </div>
+            {collectionSelected === "drinks" ||
+            collectionSelected === "menu" ? (
+              <div className="w-full mb-1">
+                <div className="flex items-center">
+                  {formData?.img && (
+                    <img
+                      src={formData?.img}
+                      className="w-16 mr-5 mt-3"
+                      alt="img"
+                    />
+                  )}
+                  <input
+                    required
+                    // className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+                    name="img"
+                    id="img"
+                    type="file"
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="w-full mb-1">
+                  <label
+                    htmlFor="amount"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Cantidad*
+                  </label>
+                  <input
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    autoComplete="amount"
+                    onChange={handleInputChange}
+                    defaultValue={productSelected?.amount}
+                    required
+                    className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="w-full mb-1">
+                  <label
+                    htmlFor="producer"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Productor*
+                  </label>
+                  <input
+                    id="producer"
+                    name="producer"
+                    type="text"
+                    autoComplete="producer"
+                    onChange={handleInputChange}
+                    defaultValue={productSelected?.producer}
+                    required
+                    className="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="w-full mb-1">
+                  <label
+                    htmlFor="type"
+                    className="block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Tipo de producto
+                  </label>
+                  <select
+                    id="type"
+                    name="type"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    defaultValue={selectedOptionProductType}
+                    onChange={(e) =>
+                      setSelectedOptionProductType(e.target.value)
+                    }
+                  >
+                    <option value="starter">Entrante</option>
+                    <option value="main">Principal</option>
+                    <option value="main">Pizza</option>
+                    <option value="main">Hamburguesa</option>
+                    <option value="drink">Bebida</option>
+                  </select>
+                </div>{" "}
+              </>
+            )}
+
             <button
               type="submit"
               className="flex justify-center rounded-md bg-teal-600 m-3 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
