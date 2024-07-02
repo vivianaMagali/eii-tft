@@ -1,6 +1,10 @@
 import React from "react";
 
-const ModalConfirmation = ({ title, setShowForm }) => {
+const ModalConfirmation = ({
+  title,
+  setShowConfirmOrderModal,
+  confirmAction,
+}) => {
   return (
     <div
       id="crud-modal"
@@ -12,12 +16,28 @@ const ModalConfirmation = ({ title, setShowForm }) => {
         <div className="relative w-full h-5/6 bg-white rounded-lg dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex justify-center items-center">
-              {/* <img src={waiter} alt="icon-waiter" className="h-10 w-10 mr-1" /> */}
-              <span>{title}</span>
+              <svg
+                class="h-8 w-8 text-teal-500"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                {" "}
+                <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                <circle cx="12" cy="12" r="9" />{" "}
+                <line x1="12" y1="8" x2="12" y2="12" />{" "}
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span className="ml-1">{title}</span>
             </h3>
             <button
               type="button"
-              onClick={() => setShowForm(false)}
+              onClick={() => setShowConfirmOrderModal(false)}
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
               data-modal-toggle="crud-modal"
             >
@@ -38,18 +58,21 @@ const ModalConfirmation = ({ title, setShowForm }) => {
               </svg>
             </button>
           </div>
+          <span className="text-lg mx-5 mt-5 text-gray-900 dark:text-white flex justify-center items-center">
+            ¿Estás seguro de realizar esta acción?
+          </span>
           <div className="flex justify-center items-center p-4 dark:border-gray-600">
             <button
-              className="my-2  bg-teal-400 p-4 rounded-full"
-              //   onClick={() => getTheCheck()}
-            >
-              <span>Aceptar</span>
-            </button>
-            <button
-              className="my-2  bg-teal-400 p-4 rounded-full"
-              //   onClick={() => callTheWaiter()}
+              className="flex justify-center rounded-md bg-gray-400 m-3 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
+              onClick={() => setShowConfirmOrderModal(false)}
             >
               <span>Cancelar</span>
+            </button>
+            <button
+              className="flex justify-center rounded-md bg-teal-600 m-3 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
+              onClick={() => confirmAction()}
+            >
+              <span>Aceptar</span>
             </button>
           </div>
         </div>

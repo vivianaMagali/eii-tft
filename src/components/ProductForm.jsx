@@ -3,6 +3,7 @@ import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { db, storage } from "../firebase/firebase";
 import { FirebaseContext } from "../firebase";
 import { getDownloadURL, uploadBytes, ref } from "firebase/storage";
+import ModalConfirmation from "./ModalConfirmation";
 
 const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
   const { user } = useContext(FirebaseContext);
@@ -43,6 +44,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
   };
 
   const [formData, setFormData] = useState(defaultValueForm());
+  const [showModalConfirm, setShowConfirmOrderModal] = useState(false);
 
   const uploadImage = async (image) => {
     const imageRef = ref(storage, image.name);
@@ -62,16 +64,15 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type, files } = e.target;
-
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "file" ? URL.createObjectURL(files[0]) : value,
     }));
   };
+
   const isEditMode = !!productSelected;
-  console.log("formdata", formData);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+  const confirmAction = async () => {
     try {
       const collectionRef = collection(
         db,
@@ -104,6 +105,12 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
     } catch (error) {
       console.log("error", error);
     }
+    setShowConfirmOrderModal(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShowConfirmOrderModal(true);
   };
 
   return (
@@ -303,6 +310,13 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
           </form>
         </div>
       </div>
+      {showModalConfirm && (
+        <ModalConfirmation
+          title={isEditMode ? "Modificar producto" : "Añadir Producto"}
+          setShowConfirmOrderModal={setShowConfirmOrderModal}
+          confirmAction={confirmAction}
+        />
+      )}
     </div>
   );
 };
