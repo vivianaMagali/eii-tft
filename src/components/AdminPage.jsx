@@ -2,17 +2,12 @@ import React, { useEffect, useState, useContext } from "react";
 import logo from "../assets/logo-removebg-preview.png";
 import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
-import {
-  collection,
-  getDoc,
-  onSnapshot,
-  doc,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import InventoryChart from "./InventoryChart";
 import ProductForm from "./ProductForm";
+import ModalConfirmation from "./ModalConfirmation";
+import Header from "./Header";
 
 const AdminPage = () => {
   const { user } = useContext(FirebaseContext);
@@ -22,7 +17,9 @@ const AdminPage = () => {
   const [productSelected, setProductSelected] = useState();
   const [menus, setMenus] = useState([]);
   const [drinks, setDrinks] = useState([]);
-  const [collectionSelected, setCollection] = useState();
+  const [collectionSelected, setCollectionSelected] = useState();
+  const [showModalConfirm, setShowConfirmOrderModal] = useState(false);
+  const [uidProductSelected, setUidProductSelected] = useState();
 
   useEffect(() => {
     if (!user) return;
@@ -63,51 +60,39 @@ const AdminPage = () => {
     navigate("/profile");
   };
 
-  const deleteProduct = async (nameCollection, uid) => {
+  const deleteProduct = async () => {
+    setShowConfirmOrderModal(true);
+  };
+
+  const confirmAction = async () => {
     const docRef = doc(
       db,
       "restaurants",
       user?.uidRestaurant,
-      nameCollection,
-      uid,
+      collectionSelected,
+      productSelected.uid,
     );
     try {
       await deleteDoc(docRef);
     } catch (error) {
       console.log("error", error);
     }
+    setShowConfirmOrderModal(false);
   };
 
   return (
     <>
-      <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
-        <img className="w-16" src={logo} alt="Your Company" />
-        <button onClick={() => goProfile()}>
-          <svg
-            className="h-10 w-10 text-teal-200"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </button>
-      </div>
+      <Header />
       <InventoryChart inventoryData={inventory}></InventoryChart>
-      <div className="m-5 flex flex-col justify-center items-center">
-        <div className="mt-5 mx-5">
+      <div class="m-5 flex flex-col justify-center items-center">
+        <div class="mt-5 mx-5">
           <button
             onClick={() => {
               setShowForm(true);
               setProductSelected(undefined);
-              setCollection("inventory");
+              setCollectionSelected("inventory");
             }}
-            className="px-2 py-2 text-white rounded font-bold bg-teal-600"
+            class="px-2 py-2 text-white rounded font-bold bg-teal-600"
           >
             Añadir producto al inventario
           </button>
@@ -119,12 +104,12 @@ const AdminPage = () => {
             ></ProductForm>
           )}
         </div>
-        <h1 className="font-bold text-xl m-5">Listado del inventario</h1>
-        <table className="table-auto bg-white shadow-md rounded-lg mx-5 p-5 w-full">
-          <thead className="">
-            <tr>
-              <th className="">Nombre</th>
-              <th className="">Ingredientes</th>
+        <h1 class="font-bold text-xl m-5">Listado del inventario</h1>
+        <table class="table-auto bg-white shadow-md rounded-lg mx-5 p-5 w-full">
+          <thead>
+            <tr class="text-left">
+              <th>Nombre</th>
+              <th>Ingredientes</th>
               <th>Precio</th>
               <th>Cantidad</th>
               <th>Tipo</th>
@@ -144,10 +129,14 @@ const AdminPage = () => {
                 <td>{product.producer}</td>
                 <td>
                   <button
-                    onClick={() => deleteProduct("inventory", product.uid)}
+                    onClick={() => {
+                      deleteProduct();
+                      setProductSelected(product);
+                      setCollectionSelected("inventory");
+                    }}
                   >
                     <svg
-                      className="h-6 w-6 text-teal-500"
+                      class="h-6 w-6 text-teal-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -165,12 +154,12 @@ const AdminPage = () => {
                   <button
                     onClick={() => {
                       setShowForm(true);
-                      setCollection("inventory");
+                      setCollectionSelected("inventory");
                       setProductSelected(product);
                     }}
                   >
                     <svg
-                      className="h-5 w-5 text-teal-500"
+                      class="h-5 w-5 text-teal-500"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
@@ -191,14 +180,14 @@ const AdminPage = () => {
             ))}
           </tbody>
         </table>
-        <div className="mt-5 mx-5">
+        <div class="mt-5 mx-5">
           <button
             onClick={() => {
               setShowForm(true);
               setProductSelected(undefined);
-              setCollection("menu");
+              setCollectionSelected("menu");
             }}
-            className="px-2 py-2 text-white rounded font-bold bg-teal-600"
+            class="px-2 py-2 mt-4 text-white rounded font-bold bg-teal-600"
           >
             Añadir producto a la carta
           </button>
@@ -210,13 +199,13 @@ const AdminPage = () => {
             ></ProductForm>
           )}
         </div>
-        <h1 className="font-bold text-xl m-5">Carta disponible</h1>
-        <table className="table-auto bg-white shadow-md rounded-lg mx-5 p-5 w-full">
-          <thead className="">
-            <tr>
+        <h1 class="font-bold text-xl m-5">Carta disponible</h1>
+        <table class="table-auto bg-white shadow-md rounded-lg mx-5 p-5 w-full">
+          <thead>
+            <tr class="text-left">
               <th></th>
-              <th className="">Nombre</th>
-              <th className="">Ingredientes</th>
+              <th>Nombre</th>
+              <th>Ingredientes</th>
               <th>Precio</th>
             </tr>
           </thead>
@@ -224,15 +213,21 @@ const AdminPage = () => {
             {menus.map((menu) => (
               <tr key={menu.uid}>
                 <td>
-                  <img src={menu.img} className="w-16" alt="img-product" />
+                  <img src={menu.img} class="w-16" alt="img-product" />
                 </td>
                 <td>{menu.name}</td>
                 <td>{menu.ingredients}</td>
                 <td>{menu.price}€</td>
                 <td>
-                  <button onClick={() => deleteProduct("menu", menu.uid)}>
+                  <button
+                    onClick={() => {
+                      deleteProduct();
+                      setProductSelected(menu);
+                      setCollectionSelected("menu");
+                    }}
+                  >
                     <svg
-                      className="h-6 w-6 text-teal-500"
+                      class="h-6 w-6 text-teal-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -251,11 +246,11 @@ const AdminPage = () => {
                     onClick={() => {
                       setShowForm(true);
                       setProductSelected(menu);
-                      setCollection("menu");
+                      setCollectionSelected("menu");
                     }}
                   >
                     <svg
-                      className="h-5 w-5 text-teal-500"
+                      class="h-5 w-5 text-teal-500"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
@@ -277,15 +272,20 @@ const AdminPage = () => {
             {drinks.map((drink) => (
               <tr key={drink.uid}>
                 <td>
-                  <img src={drink.img} className="w-14" alt="img-product" />
+                  <img src={drink.img} class="w-14" alt="img-product" />
                 </td>
                 <td>{drink.name}</td>
                 <td>{drink.ingredients}</td>
                 <td>{drink.price}€</td>
                 <td>
-                  <button onClick={() => deleteProduct("drinks", drink.uid)}>
+                  <button
+                    onClick={() => {
+                      setProductSelected(drink.uid);
+                      setCollectionSelected("drinks");
+                    }}
+                  >
                     <svg
-                      className="h-6 w-6 text-teal-500"
+                      class="h-6 w-6 text-teal-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -304,11 +304,11 @@ const AdminPage = () => {
                     onClick={() => {
                       setShowForm(true);
                       setProductSelected(drink);
-                      setCollection("drinks");
+                      setCollectionSelected("drinks");
                     }}
                   >
                     <svg
-                      className="h-5 w-5 text-teal-500"
+                      class="h-5 w-5 text-teal-500"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
@@ -330,6 +330,13 @@ const AdminPage = () => {
           </tbody>
         </table>
       </div>
+      {showModalConfirm && (
+        <ModalConfirmation
+          title={"Eliminar producto"}
+          setShowConfirmOrderModal={setShowConfirmOrderModal}
+          confirmAction={confirmAction}
+        />
+      )}
     </>
   );
 };

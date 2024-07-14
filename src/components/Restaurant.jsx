@@ -44,7 +44,7 @@ const Restaurant = () => {
   }, [id]);
 
   return (
-    <div className="flex flex-col">
+    <div class="flex flex-col">
       <RestaurantContext.Provider
         value={{ basicInformation: restaurant.basicInformation }}
       >
@@ -59,10 +59,12 @@ const Restaurant = () => {
             total={total}
           />
         )}
-        <div className="flex flex-row justify-center my-14 px-8">
-          <div className="flex flex-col justify-center">
-            <span className="px-8">Comidas</span>
-            <div className="flex flex-row flex-wrap items-start">
+        <div class="flex flex-row justify-center my-14 px-8">
+          <div class="flex flex-col justify-center">
+            <span class="px-8 font-bold uppercase flex justify-center">
+              Comidas
+            </span>
+            <div class="flex flex-row flex-wrap items-start justify-center">
               {menus?.length > 0 &&
                 menus.map((menu) => (
                   <MenuCard
@@ -74,8 +76,10 @@ const Restaurant = () => {
                   />
                 ))}
             </div>
-            <span className="px-8">Bebidas</span>
-            <div className="flex flex-row flex-wrap items-start">
+            <span class="px-8 font-bold uppercase flex justify-center">
+              Bebidas
+            </span>
+            <div class="flex flex-row flex-wrap items-start justify-center">
               {drinks?.length > 0 &&
                 drinks.map((drink) => (
                   <MenuCard
@@ -88,17 +92,16 @@ const Restaurant = () => {
                 ))}
             </div>
           </div>
-          {orders.length > 0 ? (
-            <OrderSummary
-              className="duration-75"
-              orders={orders}
-              setShowConfirmOrderModal={setShowConfirmOrderModal}
-              showOrderSummary={showOrderSummary}
-              setShowOrderSummary={setShowOrderSummary}
-              total={total}
-              setTotal={setTotal}
-            />
-          ) : null}
+
+          <OrderSummary
+            class="duration-75"
+            orders={orders}
+            setShowConfirmOrderModal={setShowConfirmOrderModal}
+            showOrderSummary={showOrderSummary}
+            setShowOrderSummary={setShowOrderSummary}
+            total={total}
+            setTotal={setTotal}
+          />
         </div>
       </RestaurantContext.Provider>
     </div>

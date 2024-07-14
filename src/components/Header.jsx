@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import RestaurantSearch from "./RestaurantSearch";
 import logo from "../assets/logo-removebg-preview.png";
 import waiter from "../assets/camarero.png";
 import order from "../assets/comida.png";
@@ -23,38 +22,34 @@ const Header = () => {
   const goProfile = () => {
     navigate("/profile");
   };
-
+  // TODO: aqui tener en cuenta que me esta recorriendo mi historial, tengo que tener en cuenta tambien
+  // el estado o algo para que me enseñe el que tengo ahora mismo y no una mesa en la que estuve hace un mes
+  const localRecord = record.find((rcd) => rcd.category === "local");
   return (
-    <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
+    <div class="flex px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
       {showWaitTime && <WaitTime setShowWaitTime={setShowWaitTime} />}
       <button
         onClick={() => {
           !user?.role && goHome();
         }}
       >
-        <img className="w-16" src={logo} alt="Your Company" />
+        <img class="w-16" src={logo} alt="Your Company" />
       </button>
       {!user?.role && (
-        <>
-          <RestaurantSearch />
+        <div class="ml-auto flex items-center space-x-4">
           {callToWaiter && <CallToWaiter setCallToWaiter={setCallToWaiter} />}
-          {/* hay que cambiar esto porque sino sale muchas veces el icono del camarero */}
-          {record.length > 0 &&
-            record.map(
-              (rcd) =>
-                rcd.category === "local" && (
-                  <button onClick={() => setCallToWaiter(true)}>
-                    <img src={waiter} alt="icon-waiter" className="h-10 w-10" />
-                  </button>
-                ),
-            )}
+          {localRecord && (
+            <button onClick={() => setCallToWaiter(true)}>
+              <img src={waiter} alt="icon-waiter" class="h-10 w-10" />
+            </button>
+          )}
           <button onClick={() => setShowWaitTime(true)}>
-            <img src={order} alt="icon-order" className="h-12 w-12" />
+            <img src={order} alt="icon-order" class="h-12 w-12" />
           </button>
           {showRecord && <Record setShowRecord={setShowRecord} />}
           <button onClick={() => setShowRecord(true)}>
             <svg
-              className="h-10 w-10 text-teal-200"
+              class="h-10 w-10 text-teal-200"
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -72,11 +67,15 @@ const Header = () => {
               <line x1="9" y1="15" x2="13" y2="15" />
             </svg>
           </button>
-        </>
+        </div>
       )}
-      <button onClick={() => goProfile()}>
+
+      <button
+        class="ml-auto flex items-center space-x-4"
+        onClick={() => goProfile()}
+      >
         <svg
-          className="h-10 w-10 text-teal-200"
+          class="h-10 w-10 text-teal-200"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

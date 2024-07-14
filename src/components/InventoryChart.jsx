@@ -51,11 +51,11 @@ const InventoryChart = ({ inventoryData }) => {
 
   return (
     <>
-      <div className="flex justify-center text-xl font-bold mt-10">
+      <div class="flex justify-center text-xl font-bold mt-10">
         <h1>Gráfica de inventario de productos</h1>
       </div>
 
-      <div className="p-4 bg-white shadow-md rounded-lg mx-5">
+      <div class="p-4 bg-white shadow-md rounded-lg mx-5">
         <Bar
           data={chartData}
           options={{ responsive: true, maintainAspectRatio: false }}

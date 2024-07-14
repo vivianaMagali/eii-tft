@@ -10,12 +10,15 @@ import {
 } from "firebase/firestore";
 import { FirebaseContext } from "../firebase";
 import { db } from "../firebase/firebase";
+import ModalConfirmation from "./ModalConfirmation";
 
 const CashierPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(FirebaseContext);
   const [commands, setCommands] = useState([]);
   // const [showPaid, setShowPaid] = useState([]);
+  const [showModalConfirm, setShowConfirmOrderModal] = useState(false);
+  const [commandSelected, setCommandSelected] = useState();
 
   useEffect(() => {
     if (!user) return;
@@ -40,13 +43,13 @@ const CashierPage = () => {
     navigate("/profile");
   };
 
-  const paidOrder = async (command) => {
+  const confirmAction = async () => {
     const docRef = doc(
       db,
       "restaurants",
       user?.uidRestaurant,
       "comandas",
-      command.uidOrder,
+      commandSelected.uidOrder,
     );
     const docSnap = await getDoc(docRef);
 
@@ -59,15 +62,28 @@ const CashierPage = () => {
         console.log(error);
       }
     }
+    setShowConfirmOrderModal(false);
+  };
+
+  const paidOrder = async (command) => {
+    setCommandSelected(command);
+    setShowConfirmOrderModal(true);
   };
 
   return (
     <>
-      <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
-        <img className="w-16" src={logo} alt="Your Company" />
+      {showModalConfirm && (
+        <ModalConfirmation
+          title={"Cerrar transacción"}
+          setShowConfirmOrderModal={setShowConfirmOrderModal}
+          confirmAction={confirmAction}
+        />
+      )}
+      <div class="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
+        <img class="w-16" src={logo} alt="Your Company" />
         <button onClick={() => goProfile()}>
           <svg
-            className="h-10 w-10 text-teal-200"
+            class="h-10 w-10 text-teal-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -82,7 +98,7 @@ const CashierPage = () => {
         </button>
         {/* <button onClick={() => setShowPaid(true)}>
           <svg
-            className="h-10 w-10 text-teal-200"
+            class="h-10 w-10 text-teal-200"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -102,41 +118,42 @@ const CashierPage = () => {
         </button> */}
       </div>
       {commands.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col ml-10 mr-40">
-            <h1 className="font-bold text-2xl my-6 mx-2/4">
-              Listado de comandas
-            </h1>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col ml-10 mr-40">
+            <h1 class="font-bold text-2xl my-6 mx-2/4">Listado de comandas</h1>
             {commands.map(
               (command) =>
                 !command.paymentStatus && (
                   <div
-                    className="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                    class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
                     key={command.id}
                   >
+                    {command?.table && (
+                      <span class="px-6 font-bold underline">
+                        Mesa: {command.table}
+                      </span>
+                    )}
                     {command.order.map((ord) => (
                       <div key={ord.id}>
-                        <div className="px-6 flex flex-col">
-                          <span className="font-bold">
+                        <div class="px-6 flex flex-col">
+                          <span class="font-bold">
                             {ord.amount}x {ord.name}
                           </span>
-                          <span className="text-gray-700">
-                            {ord.ingredients}
-                          </span>
+                          <span class="text-gray-700">{ord.ingredients}</span>
                         </div>
                         {ord.comment && <span>Comentario: {ord.comment}</span>}
                       </div>
                     ))}
-                    <div className="font-bold flex justify-between items-center rounded my-2 mx-2">
+                    <div class="font-bold flex justify-between items-center rounded my-2 mx-2">
                       <button
-                        className=" bg-teal-300 rounded mr-2 px-3 py-2"
+                        class=" bg-teal-300 rounded mr-2 px-3 py-2"
                         onClick={() => paidOrder(command)}
                       >
                         Efectivo
                       </button>
-                      <span className="font-bold">Total: {command.total}€</span>
+                      <span class="font-bold">Total: {command.total}€</span>
                       <button
-                        className=" bg-teal-300 rounded px-3 py-2"
+                        class=" bg-teal-300 rounded px-3 py-2"
                         onClick={() => paidOrder(command)}
                       >
                         Tarjeta

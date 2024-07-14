@@ -83,11 +83,11 @@ const ChefPage = () => {
 
   return (
     <>
-      <div className="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
-        <img className="w-16" src={logo} alt="Your Company" />
+      <div class="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
+        <img class="w-16" src={logo} alt="Your Company" />
         <button onClick={() => goProfile()}>
           <svg
-            className="h-10 w-10 text-teal-200"
+            class="h-10 w-10 text-teal-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -102,36 +102,32 @@ const ChefPage = () => {
         </button>
       </div>
       {commands.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col ml-10 mr-40">
-            <h1 className="font-bold text-3xl my-6 mx-2/4">
-              Listado de comandas
-            </h1>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col ml-10 mr-40">
+            <h1 class="font-bold text-3xl my-6 mx-2/4">Listado de comandas</h1>
             {commands.map(
               (command) =>
                 command.state === 1 && (
                   <div
-                    className="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                    class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
                     key={command.id}
                   >
                     {command.order.map((ord) => (
                       <div key={ord.id}>
-                        <div className="px-6 py-2 flex flex-col">
-                          <span className="font-bold text-2xl mb-2">
+                        <div class="px-6 py-2 flex flex-col">
+                          <span class="font-bold text-2xl mb-2">
                             {ord.amount}x {ord.name}
                           </span>
-                          <span className="text-gray-700 text-xl">
+                          <span class="text-gray-700 text-xl">
                             {ord.ingredients}
                           </span>
                         </div>
                         {ord.comment && (
-                          <span className="text-xl">
-                            Comentario: {ord.comment}
-                          </span>
+                          <span class="text-xl">Comentario: {ord.comment}</span>
                         )}
                       </div>
                     ))}
-                    <div className="px-3 py-2 bg-teal-300 font-bold flex justify-center rounded">
+                    <div class="px-3 py-2 bg-teal-300 font-bold flex justify-center rounded">
                       <button onClick={() => changeToPreparing(command)}>
                         Aceptar comanda
                       </button>
@@ -140,35 +136,33 @@ const ChefPage = () => {
                 ),
             )}
           </div>
-          <div className="flex flex-col">
-            <h1 className="font-bold text-3xl my-6 mx-2/4">
+          <div class="flex flex-col">
+            <h1 class="font-bold text-3xl my-6 mx-2/4">
               Comandas en preparación
             </h1>
             {commands.map(
               (command) =>
                 command.state === 2 && (
                   <div
-                    className="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                    class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
                     key={command.id}
                   >
                     {command.order.map((ord) => (
                       <div key={ord.id}>
-                        <div className="px-6 py-2 flex flex-col">
-                          <span className="font-bold text-2xl mb-2">
+                        <div class="px-6 py-2 flex flex-col">
+                          <span class="font-bold text-2xl mb-2">
                             {ord.amount}x {ord.name}
                           </span>
-                          <span className="text-gray-700 text-xl">
+                          <span class="text-gray-700 text-xl">
                             {ord.ingredients}
                           </span>
                         </div>
                         {ord.comment && (
-                          <span className="text-xl">
-                            Comentario: {ord.comment}
-                          </span>
+                          <span class="text-xl">Comentario: {ord.comment}</span>
                         )}
                       </div>
                     ))}
-                    <div className="px-3 py-2 bg-green-300 font-bold flex justify-center rounded">
+                    <div class="px-3 py-2 bg-green-300 font-bold flex justify-center rounded">
                       <button onClick={() => changeToFinish(command)}>
                         Terminar comanda
                       </button>
