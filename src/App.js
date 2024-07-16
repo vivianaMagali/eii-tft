@@ -21,6 +21,41 @@ const auth = getAuth(credencialsFirebase);
 function App() {
   const [user, setUser] = useState();
   const [record, setRecord] = useState([]);
+  const [token, setToken] = useState();
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      "http://localhost:3001/api/subscribe-token",
+    );
+
+    eventSource.onopen = () => {
+      console.log("Connection to server opened.");
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.token) {
+          setToken(data.token);
+        } else if (data.error) {
+          console.error("Error received:", data.error);
+        } else {
+          console.log("No token found in the response");
+        }
+      } catch (error) {
+        console.error("Error parsing event data:", error);
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("Error with SSE:", error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -48,7 +83,9 @@ function App() {
 
   return (
     <div>
-      <FirebaseContext.Provider value={{ user: user, record: record }}>
+      <FirebaseContext.Provider
+        value={{ user: user, record: record, token: token }}
+      >
         <Routes>
           <Route
             path="/"

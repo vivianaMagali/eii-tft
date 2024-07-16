@@ -1,14 +1,44 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import waiter from "../assets/camarero.png";
+import { FirebaseContext } from "../firebase";
 
 const CallToWaiter = ({ setCallToWaiter }) => {
+  const { token } = useContext(FirebaseContext);
+
+  console.log("token fuera", token);
+
   const getTheCheck = () => {
     console.log("traer cuenta");
   };
 
   const callTheWaiter = () => {
-    console.log("llamar al camarero");
+    sendPushNotification();
+    // console.log("llamar al camarero");
   };
+
+  const sendPushNotification = async () => {
+    try {
+      const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "key=AAAAjS_rHrQ:APA91bFIpxZwmJhO_6DJ6Kf4uHKXYuz86RJGYbUPhWqm4Qco5TeQytN1s5HmxQTzY2oUfEqtt3n3fNqhfDWv-Wnaw50C41c2C4qBmQ4cJnozWExbtMTUv2DJZXEHgHtGRIhtV5LbG1HX", // Reemplaza con tu clave de servidor de Firebase
+        },
+        body: JSON.stringify({
+          to: token,
+          notification: {
+            title: "Título de la notificación",
+            body: "Cuerpo de la notificación",
+          },
+        }),
+      });
+      console.log("Notificación enviada:", response);
+    } catch (error) {
+      console.error("Error al enviar la notificación:", error);
+    }
+  };
+
   return (
     <div
       id="crud-modal"
