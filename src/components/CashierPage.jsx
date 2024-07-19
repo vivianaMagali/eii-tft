@@ -16,7 +16,7 @@ const CashierPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(FirebaseContext);
   const [commands, setCommands] = useState([]);
-  // const [showPaid, setShowPaid] = useState([]);
+  const [showPaid, setShowPaid] = useState(false);
   const [showModalConfirm, setShowConfirmOrderModal] = useState(false);
   const [commandSelected, setCommandSelected] = useState();
 
@@ -96,7 +96,7 @@ const CashierPage = () => {
             />
           </svg>
         </button>
-        {/* <button onClick={() => setShowPaid(true)}>
+        <button onClick={() => setShowPaid(!showPaid)}>
           <svg
             class="h-10 w-10 text-teal-200"
             width="24"
@@ -115,12 +115,14 @@ const CashierPage = () => {
             <line x1="9" y1="11" x2="15" y2="11" />{" "}
             <line x1="9" y1="15" x2="13" y2="15" />
           </svg>
-        </button> */}
+        </button>
       </div>
       {commands.length > 0 && (
         <div class="grid grid-cols-2 gap-4">
-          <div class="flex flex-col ml-10 mr-40">
-            <h1 class="font-bold text-2xl my-6 mx-2/4">Listado de comandas</h1>
+          <div class="flex flex-col justify-center items-center">
+            <h1 class="font-bold text-2xl my-6 mx-2/4">
+              Comandas pendientes de pago
+            </h1>
             {commands.map(
               (command) =>
                 !command.paymentStatus && (
@@ -128,11 +130,17 @@ const CashierPage = () => {
                     class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
                     key={command.id}
                   >
-                    {command?.table && (
-                      <span class="px-6 font-bold underline">
-                        Mesa: {command.table}
+                    <div class="flex flex-col">
+                      <span class="px-6 font-bold italic">
+                        Identificador: {command.uidOrder}
                       </span>
-                    )}
+                      {command?.table && (
+                        <span class="px-6 font-bold underline">
+                          Mesa: {command.table}
+                        </span>
+                      )}
+                    </div>
+
                     {command.order.map((ord) => (
                       <div key={ord.id}>
                         <div class="px-6 flex flex-col">
@@ -163,6 +171,49 @@ const CashierPage = () => {
                 ),
             )}
           </div>
+          {showPaid && (
+            <div class="flex flex-col ml-10 mr-40">
+              <h1 class="font-bold text-2xl my-6 mx-2/4">Comandas pagadas</h1>
+              {commands.map(
+                (command) =>
+                  command.paymentStatus && (
+                    <div
+                      class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                      key={command.id}
+                    >
+                      <div class="flex flex-col">
+                        <span class="px-6 font-bold italic">
+                          Identificador: {command.uidOrder}
+                        </span>
+                        {command?.table && (
+                          <span class="px-6 font-bold underline">
+                            Mesa: {command.table}
+                          </span>
+                        )}
+                      </div>
+
+                      {command.order.map((ord) => (
+                        <div key={ord.id}>
+                          <div class="px-6 flex flex-col">
+                            <span class="font-bold">
+                              {ord.amount}x {ord.name}
+                            </span>
+                            <span class="text-gray-700">{ord.ingredients}</span>
+                          </div>
+                          {ord.comment && (
+                            <span>Comentario: {ord.comment}</span>
+                          )}
+                        </div>
+                      ))}
+
+                      <span class="px-6 text-sm italic my-5">
+                        {command.date}
+                      </span>
+                    </div>
+                  ),
+              )}
+            </div>
+          )}
         </div>
       )}
     </>
