@@ -43,19 +43,25 @@ const WaitTime = ({ setShowWaitTime }) => {
           </button>
         </div>
 
-        {record.map(
-          (rcd, index) =>
-            rcd.state !== stateOrders.TERMINADO && (
-              <div class="my-2 flex-col flex justify-center items-center">
-                <span>Restaurante: {rcd.name}</span>
-                <span>Pedido: {rcd.orderId}</span>
-                <span>Estado: {getKeyByValue(rcd.state)}</span>
-                <span>Tiempo restante aprox: {rcd.waitTime} min.</span>
-                {index !== record.length - 1 && (
-                  <hr key="line-break" class="my-2 w-full border-gray-300" />
-                )}
-              </div>
-            ),
+        {record.length > 0 ? (
+          record.map(
+            (rcd, index) =>
+              rcd.state !== stateOrders.TERMINADO && (
+                <div class="my-2 flex-col flex justify-center items-center">
+                  <span>Restaurante: {rcd.name}</span>
+                  <span>Pedido: {rcd.orderId}</span>
+                  <span>Estado: {getKeyByValue(rcd.state)}</span>
+                  <span>Tiempo restante aprox: {rcd.waitTime} min.</span>
+                  {index !== record.length - 1 && (
+                    <hr key="line-break" class="my-2 w-full border-gray-300" />
+                  )}
+                </div>
+              ),
+          )
+        ) : (
+          <span class="text-gray-900 text-lg ml-3">
+            No tienes ningún pedido pendiente
+          </span>
         )}
       </div>
     </div>

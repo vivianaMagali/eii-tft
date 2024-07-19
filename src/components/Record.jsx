@@ -90,7 +90,11 @@ const Record = ({ setShowRecord }) => {
               </div>
             ))}
           </div>
-        ) : null}
+        ) : (
+          <span class="text-gray-900 text-sm ml-3">
+            Tu historial esta vacío
+          </span>
+        )}
       </div>
     </div>
   );

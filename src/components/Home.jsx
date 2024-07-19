@@ -4,7 +4,7 @@ import { db } from "../firebase/firebase";
 import RestaurantCard from "./RestaurantCard";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import RestaurantSearch from "./RestaurantSearch";
+// import RestaurantSearch from "./RestaurantSearch";
 
 const Home = () => {
   const [restaurantList, setRestaurantList] = useState();
@@ -27,7 +27,7 @@ const Home = () => {
     <>
       <Header />
       <div class="flex flex-col items-center justify-center">
-        <RestaurantSearch />
+        {/* <RestaurantSearch /> */}
         <h1 class="font-bold text-xl my-3">¿Dónde deseas comer?</h1>
         <div class="w-full flex flex-row flex-wrap justify-center items-start">
           {restaurantList?.length > 0 &&
