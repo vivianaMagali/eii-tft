@@ -1,39 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 
-const RestaurantSearch = ({ restaurantList }) => {
+const RestaurantSearch = ({ filterRestaurants }) => {
+  const [text, setText] = useState();
+
+  const handleTextChange = (e) => {
+    const textInput = e.target.value;
+    setText(textInput);
+    filterRestaurants(textInput);
+  };
+
   return (
-    <form class="mx-auto w-1/3 m-5">
-      <div class="relative w-full">
-        <input
-          type="search"
-          id="search-dropdown"
-          class="block p-2.5 w-full z-20 text-sm rounded-e-lg rounded-s-lg border-s-2 border-gray-500 focus:ring-teal-500 focus:border-teal-500 dark:text-white dark:focus:border-teal-500"
-          placeholder="Restaurante..."
-          required
-        />
-        <button
-          type="submit"
-          class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-teal-400 rounded-e-lg border border-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 dark:bg-teal-600 dark:hover:bg-teal-700 dark:focus:ring-teal-800"
-        >
-          <svg
-            class="w-4 h-4"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-            />
-          </svg>
-          <span class="sr-only">Search</span>
-        </button>
-      </div>
-    </form>
+    <div class="relative w-72 m-5">
+      <input
+        id="text"
+        name="text"
+        type="text"
+        placeholder="Elegir restaurante..."
+        onChange={handleTextChange}
+        required
+        value={text}
+        class="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
+      />
+    </div>
   );
 };
 

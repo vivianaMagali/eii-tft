@@ -18,7 +18,6 @@ const ConfirmOrder = ({
   const [place, setPlace] = useState(null);
   const { id } = useParams();
   const { user } = useContext(FirebaseContext);
-
   const saveOrder = async (e) => {
     e.preventDefault();
     const dateNow = new Date();
@@ -30,8 +29,7 @@ const ConfirmOrder = ({
     const querySnapshot = await getDocs(comandasRef);
 
     const orderList = querySnapshot.size;
-    // 5 es el tiempo medio de espera por pedido
-    const waitTime = Math.floor(orderList * 5);
+    const waitTime = Math.floor(orderList * restaurant.waitTime);
 
     const getData = () => {
       if (e.target.category.value === "home") {
