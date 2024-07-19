@@ -1,11 +1,9 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import waiter from "../assets/camarero.png";
 import { FirebaseContext } from "../firebase";
 
 const CallToWaiter = ({ setCallToWaiter }) => {
   const { token } = useContext(FirebaseContext);
-
-  console.log("token fuera", token);
 
   const getTheCheck = () => {
     console.log("traer cuenta");
@@ -13,12 +11,11 @@ const CallToWaiter = ({ setCallToWaiter }) => {
 
   const callTheWaiter = () => {
     sendPushNotification();
-    // console.log("llamar al camarero");
   };
 
   const sendPushNotification = async () => {
     try {
-      const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+      await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +30,6 @@ const CallToWaiter = ({ setCallToWaiter }) => {
           },
         }),
       });
-      console.log("Notificación enviada:", response);
     } catch (error) {
       console.error("Error al enviar la notificación:", error);
     }
