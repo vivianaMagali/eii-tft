@@ -97,11 +97,11 @@ const RestaurantCard = ({ restaurant }) => {
           <span class="text-xs">{restaurant.basic_information.phone}</span>
         </div>
       </div>
-      {/* {!Number.isNaN(distance) ? ( */}
-      <div class="flex justify-end mx-2">
-        <span class="text-xs">Distancia: {distance?.toFixed(2)} km</span>
-      </div>
-      {/* ) : null} */}
+      {!Number.isNaN(distance) ? (
+        <div class="flex justify-end mx-2">
+          <span class="text-xs">Distancia: {distance?.toFixed(2)} km</span>
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -132,7 +132,7 @@ const CashierPage = () => {
                   >
                     <div class="flex flex-col">
                       <span class="px-6 font-bold italic">
-                        Identificador: {command.uidOrder}
+                        Identificador: {command.orderId}
                       </span>
                       {command?.table && (
                         <span class="px-6 font-bold underline">
@@ -182,7 +182,7 @@ const CashierPage = () => {
                     >
                       <div class="flex flex-col">
                         <span class="px-6 font-bold italic">
-                          Identificador: {command.uidOrder}
+                          Identificador: {command.orderId}
                         </span>
                         {command?.table && (
                           <span class="px-6 font-bold underline">

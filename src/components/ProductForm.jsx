@@ -72,7 +72,6 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
   };
 
   const isEditMode = !!productSelected;
-  console.log("formData", formData);
   const confirmAction = async () => {
     try {
       const collectionRef = collection(

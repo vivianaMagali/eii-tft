@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import logo from "../assets/logo-removebg-preview.png";
-import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
 import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
@@ -12,7 +10,6 @@ import { getProductType } from "../utils";
 
 const AdminPage = () => {
   const { user } = useContext(FirebaseContext);
-  const navigate = useNavigate();
   const [inventory, setInventory] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [productSelected, setProductSelected] = useState();
@@ -20,7 +17,6 @@ const AdminPage = () => {
   const [drinks, setDrinks] = useState([]);
   const [collectionSelected, setCollectionSelected] = useState();
   const [showModalConfirm, setShowConfirmOrderModal] = useState(false);
-  const [uidProductSelected, setUidProductSelected] = useState();
 
   useEffect(() => {
     if (!user) return;
