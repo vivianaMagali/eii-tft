@@ -13,6 +13,7 @@ const ConfirmOrder = ({
   restaurant,
   setShowOrderSummary,
   total,
+  resetQuantities,
 }) => {
   const [place, setPlace] = useState(null);
   const { id } = useParams();
@@ -103,6 +104,7 @@ const ConfirmOrder = ({
       setOrders([]);
       setShowConfirmOrderModal(false);
       setShowOrderSummary(false);
+      resetQuantities();
     } catch (e) {
       console.error("Error añadiendo el documento: ", e);
     }
@@ -110,7 +112,7 @@ const ConfirmOrder = ({
 
   return (
     <div class="fixed z-10 inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-      <div class="relative w-6/12 h-5/6 bg-white rounded overflow-auto">
+      <div class="relative min-w-96 max-h-full bg-white rounded overflow-auto">
         <div class="flex items-center justify-between p-4 rounded-lg">
           <h3 class="text-gray-900 text-lg font-semibold">Confirmar pedido</h3>
           <button

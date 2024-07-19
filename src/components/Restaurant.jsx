@@ -16,9 +16,9 @@ const Restaurant = () => {
   const [total, setTotal] = useState();
   const [showConfirmOrderModal, setShowConfirmOrderModal] = useState(false);
   const [showOrderSummary, setShowOrderSummary] = useState(false);
-
   const location = useLocation();
   const { restaurant } = location.state || {};
+  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     if (!id) return;
@@ -43,6 +43,10 @@ const Restaurant = () => {
     };
   }, [id]);
 
+  const resetQuantities = () => {
+    setQuantities({});
+  };
+
   return (
     <div class="flex flex-col">
       <RestaurantContext.Provider
@@ -57,6 +61,7 @@ const Restaurant = () => {
             restaurant={restaurant}
             setShowOrderSummary={setShowOrderSummary}
             total={total}
+            resetQuantities={resetQuantities}
           />
         )}
         <div class="flex flex-row justify-center my-14 px-8">
@@ -73,6 +78,13 @@ const Restaurant = () => {
                     orders={orders}
                     setOrders={setOrders}
                     setShowOrderSummary={setShowOrderSummary}
+                    quantity={quantities[menu.name] || 0}
+                    setQuantity={(newQuantity) =>
+                      setQuantities((prev) => ({
+                        ...prev,
+                        [menu.name]: newQuantity,
+                      }))
+                    }
                   />
                 ))}
             </div>
@@ -88,6 +100,13 @@ const Restaurant = () => {
                     orders={orders}
                     setOrders={setOrders}
                     setShowOrderSummary={setShowOrderSummary}
+                    quantity={quantities[drink.name] || 0}
+                    setQuantity={(newQuantity) =>
+                      setQuantities((prev) => ({
+                        ...prev,
+                        [drink.name]: newQuantity,
+                      }))
+                    }
                   />
                 ))}
             </div>

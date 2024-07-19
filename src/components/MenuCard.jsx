@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-const MenuCard = ({ product, orders, setOrders, setShowOrderSummary }) => {
-  const [quantity, setQuantity] = useState(0);
+const MenuCard = ({
+  product,
+  orders,
+  setOrders,
+  setShowOrderSummary,
+  quantity,
+  setQuantity,
+}) => {
+  // const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
     if (orders.length > 0) {
