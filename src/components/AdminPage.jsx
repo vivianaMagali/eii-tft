@@ -8,6 +8,7 @@ import InventoryChart from "./InventoryChart";
 import ProductForm from "./ProductForm";
 import ModalConfirmation from "./ModalConfirmation";
 import Header from "./Header";
+import { getProductType } from "../utils";
 
 const AdminPage = () => {
   const { user } = useContext(FirebaseContext);
@@ -121,7 +122,7 @@ const AdminPage = () => {
                 <td>{product.ingredients}</td>
                 <td>{product.price}</td>
                 <td>{product.amount}</td>
-                <td>{product.type}</td>
+                <td>{getProductType(product.type)}</td>
                 <td>{product.producer}</td>
                 <td>
                   <button

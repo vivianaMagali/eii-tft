@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import order from "../assets/comida.png";
 import { FirebaseContext } from "../firebase";
-import { getKeyByValue, stateOrders } from "../utils";
+import { getKeyByValueOfStateOrder, stateOrders } from "../utils";
 
 const WaitTime = ({ setShowWaitTime }) => {
   const { record } = useContext(FirebaseContext);
@@ -50,7 +50,7 @@ const WaitTime = ({ setShowWaitTime }) => {
                 <div class="my-2 flex-col flex justify-center items-center">
                   <span>Restaurante: {rcd.name}</span>
                   <span>Pedido: {rcd.orderId}</span>
-                  <span>Estado: {getKeyByValue(rcd.state)}</span>
+                  <span>Estado: {getKeyByValueOfStateOrder(rcd.state)}</span>
                   <span>Tiempo restante aprox: {rcd.waitTime} min.</span>
                   {index !== record.length - 1 && (
                     <hr key="line-break" class="my-2 w-full border-gray-300" />

@@ -63,8 +63,20 @@ export const stateOrders = Object.freeze({
   TERMINADO: 3,
 });
 
-export const getKeyByValue = (value) => {
+export const typeProducts = Object.freeze({
+  main: "Principal",
+  starter: "Entrante",
+  pizza: "Pizza",
+  hambur: "Hamburguesa",
+  drink: "Bebida",
+});
+
+export const getKeyByValueOfStateOrder = (value) => {
   return (
     Object.keys(stateOrders).find((key) => stateOrders[key] === value) || null
   );
+};
+
+export const getProductType = (key) => {
+  return typeProducts[key] || "Tipo desconocido";
 };

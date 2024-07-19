@@ -7,8 +7,8 @@ import Header from "./Header";
 import RestaurantSearch from "./RestaurantSearch";
 
 const Home = () => {
-  const [restaurantList, setRestaurantList] = useState();
-  const [filteredRestaurant, setFilteredRestaurant] = useState();
+  const [restaurantList, setRestaurantList] = useState([]);
+  const [filteredRestaurant, setFilteredRestaurant] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,21 +44,25 @@ const Home = () => {
         <h1 class="font-bold text-xl my-3">¿Dónde deseas comer?</h1>
         <RestaurantSearch filterRestaurants={filterRestaurants} />
         <div class="w-full flex flex-row flex-wrap justify-center items-start">
-          {filteredRestaurant?.length > 0 ? (
-            filteredRestaurant?.map((restaurant) => (
-              <button
-                class="w-auto p-2 hover:scale-[1.1] duration-75"
-                key={restaurant.uid}
-                onClick={() => getRestaurant(restaurant)}
-              >
-                <RestaurantCard restaurant={restaurant} />
-              </button>
-            ))
-          ) : (
-            <span>
-              Lo lamentamos, no exite ningún restaurante con ese nombre
-            </span>
-          )}
+          {filteredRestaurant?.length > 0
+            ? filteredRestaurant?.map((restaurant) => (
+                <button
+                  class="w-auto p-2 hover:scale-[1.1] duration-75"
+                  key={restaurant.uid}
+                  onClick={() => getRestaurant(restaurant)}
+                >
+                  <RestaurantCard restaurant={restaurant} />
+                </button>
+              ))
+            : restaurantList?.map((restaurant) => (
+                <button
+                  class="w-auto p-2 hover:scale-[1.1] duration-75"
+                  key={restaurant.uid}
+                  onClick={() => getRestaurant(restaurant)}
+                >
+                  <RestaurantCard restaurant={restaurant} />
+                </button>
+              ))}
         </div>
       </div>
     </>

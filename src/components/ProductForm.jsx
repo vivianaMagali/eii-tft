@@ -4,6 +4,7 @@ import { db, storage } from "../firebase/firebase";
 import { FirebaseContext } from "../firebase";
 import { getDownloadURL, uploadBytes, ref } from "firebase/storage";
 import ModalConfirmation from "./ModalConfirmation";
+import { typeProducts } from "../utils";
 
 const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
   const { user } = useContext(FirebaseContext);
@@ -272,11 +273,11 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
                   defaultValue={productSelected && productSelected?.type}
                   onChange={handleInputChange}
                 >
-                  <option value="starter">Entrante</option>
-                  <option value="main">Principal</option>
-                  <option value="pizza">Pizza</option>
-                  <option value="hamburguesa">Hamburguesa</option>
-                  <option value="drink">Bebida</option>
+                  <option value="main">{typeProducts.main}</option>
+                  <option value="starter">{typeProducts.starter}</option>
+                  <option value="pizza">{typeProducts.pizza}</option>
+                  <option value="hambur">{typeProducts.hambur}</option>
+                  <option value="drink">{typeProducts.drink}</option>
                 </select>
               </div>{" "}
             </>
