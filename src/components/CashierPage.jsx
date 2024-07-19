@@ -127,7 +127,7 @@ const CashierPage = () => {
               (command) =>
                 !command.paymentStatus && (
                   <div
-                    class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                    class="max-w-sm rounded overflow-hidden shadow-lg mb-10 min-w-96"
                     key={command.id}
                   >
                     <div class="flex flex-col">
@@ -149,7 +149,9 @@ const CashierPage = () => {
                           </span>
                           <span class="text-gray-700">{ord.ingredients}</span>
                         </div>
-                        {ord.comment && <span>Comentario: {ord.comment}</span>}
+                        {ord.description && (
+                          <span>Comentario: {ord.description}</span>
+                        )}
                       </div>
                     ))}
                     <div class="font-bold flex justify-between items-center rounded my-2 mx-2">
@@ -178,7 +180,7 @@ const CashierPage = () => {
                 (command) =>
                   command.paymentStatus && (
                     <div
-                      class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
+                      class="max-w-sm rounded overflow-hidden shadow-lg mb-10 min-w-96"
                       key={command.id}
                     >
                       <div class="flex flex-col">
@@ -200,8 +202,8 @@ const CashierPage = () => {
                             </span>
                             <span class="text-gray-700">{ord.ingredients}</span>
                           </div>
-                          {ord.comment && (
-                            <span>Comentario: {ord.comment}</span>
+                          {ord.description && (
+                            <span>Comentario: {ord.description}</span>
                           )}
                         </div>
                       ))}
