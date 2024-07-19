@@ -139,11 +139,6 @@ const CashierPage = () => {
                           Mesa: {command.table}
                         </span>
                       )}
-                      {command.description && (
-                        <span class="px-6 font-bold italic text-red-400">
-                          Comentario: ({command.description})
-                        </span>
-                      )}
                     </div>
 
                     {command.order.map((ord) => (
@@ -204,9 +199,6 @@ const CashierPage = () => {
                             </span>
                             <span class="text-gray-700">{ord.ingredients}</span>
                           </div>
-                          {ord.description && (
-                            <span>Comentario: {ord.description}</span>
-                          )}
                         </div>
                       ))}
 

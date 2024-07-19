@@ -7,17 +7,13 @@ import ModalConfirmation from "./ModalConfirmation";
 
 const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
   const { user } = useContext(FirebaseContext);
-  const [selectedOptionProductType, setSelectedOptionProductType] = useState(
-    productSelected ? productSelected?.type : "main",
-  );
-
   const objectInventory = {
     name: productSelected?.name,
     ingredients: productSelected?.ingredients,
     price: productSelected?.price,
     amount: productSelected?.amount,
     producer: productSelected?.producer,
-    type: productSelected?.type,
+    type: productSelected?.type || "starter",
   };
 
   const objectMenu = {
@@ -75,7 +71,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
   };
 
   const isEditMode = !!productSelected;
-
+  console.log("formData", formData);
   const confirmAction = async () => {
     try {
       const collectionRef = collection(
@@ -116,7 +112,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
       aria-hidden="true"
       class="fixed z-10 inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
     >
-      <div class="relative w-6/12 h-5/6 bg-white rounded overflow-auto">
+      <div class="relative w-6/12 bg-white rounded overflow-auto">
         <div class="flex items-center justify-between p-4 rounded-lg">
           <h3 class="text-gray-900 text-lg font-semibold">
             {isEditMode ? "Modificar producto" : "Añadir Producto"}
@@ -272,14 +268,14 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
                 <select
                   id="type"
                   name="type"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  defaultValue={selectedOptionProductType}
-                  onChange={(e) => setSelectedOptionProductType(e.target.value)}
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  defaultValue={productSelected && productSelected?.type}
+                  onChange={handleInputChange}
                 >
                   <option value="starter">Entrante</option>
                   <option value="main">Principal</option>
-                  <option value="main">Pizza</option>
-                  <option value="main">Hamburguesa</option>
+                  <option value="pizza">Pizza</option>
+                  <option value="hamburguesa">Hamburguesa</option>
                   <option value="drink">Bebida</option>
                 </select>
               </div>{" "}

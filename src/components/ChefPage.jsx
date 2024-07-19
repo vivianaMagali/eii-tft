@@ -112,6 +112,11 @@ const ChefPage = () => {
                     class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
                     key={command.id}
                   >
+                    {command.description && (
+                      <span class="text-xl px-6 font-bold italic text-red-400">
+                        Comentario:({command.description})
+                      </span>
+                    )}
                     {command.order.map((ord) => (
                       <div key={ord.id}>
                         <div class="px-6 py-2 flex flex-col">
@@ -122,9 +127,6 @@ const ChefPage = () => {
                             {ord.ingredients}
                           </span>
                         </div>
-                        {ord.comment && (
-                          <span class="text-xl">Comentario: {ord.comment}</span>
-                        )}
                       </div>
                     ))}
                     <div class="px-3 py-2 bg-teal-300 font-bold flex justify-center rounded">
@@ -147,6 +149,11 @@ const ChefPage = () => {
                     class="max-w-sm rounded overflow-hidden shadow-lg mb-10"
                     key={command.id}
                   >
+                    {command.description && (
+                      <span class="text-xl px-6 font-bold italic text-red-400">
+                        Comentario:({command.description})
+                      </span>
+                    )}
                     {command.order.map((ord) => (
                       <div key={ord.id}>
                         <div class="px-6 py-2 flex flex-col">
@@ -157,9 +164,6 @@ const ChefPage = () => {
                             {ord.ingredients}
                           </span>
                         </div>
-                        {ord.comment && (
-                          <span class="text-xl">Comentario: {ord.comment}</span>
-                        )}
                       </div>
                     ))}
                     <div class="px-3 py-2 bg-green-300 font-bold flex justify-center rounded">

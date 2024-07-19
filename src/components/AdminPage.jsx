@@ -56,10 +56,6 @@ const AdminPage = () => {
     };
   }, [user]);
 
-  const goProfile = () => {
-    navigate("/profile");
-  };
-
   const deleteProduct = async () => {
     setShowConfirmOrderModal(true);
   };
