@@ -41,8 +41,8 @@ const Home = () => {
     <>
       <Header />
       <div class="flex flex-col items-center justify-center">
-        <RestaurantSearch filterRestaurants={filterRestaurants} />
         <h1 class="font-bold text-xl my-3">¿Dónde deseas comer?</h1>
+        <RestaurantSearch filterRestaurants={filterRestaurants} />
         <div class="w-full flex flex-row flex-wrap justify-center items-start">
           {filteredRestaurant?.length > 0 ? (
             filteredRestaurant?.map((restaurant) => (

@@ -10,7 +10,7 @@ const RestaurantSearch = ({ filterRestaurants }) => {
   };
 
   return (
-    <div class="relative w-72 m-5">
+    <div class="relative w-72 mb-5">
       <input
         id="text"
         name="text"
