@@ -17,7 +17,7 @@ const ConfirmOrder = ({
 }) => {
   const [place, setPlace] = useState(null);
   const { id } = useParams();
-  const { user } = useContext(FirebaseContext);
+  const { user, token } = useContext(FirebaseContext);
   const saveOrder = async (e) => {
     e.preventDefault();
     const dateNow = new Date();
@@ -48,6 +48,7 @@ const ConfirmOrder = ({
           orderId: generateUID(),
           waitTime: waitTime,
           paymentStatus: false,
+          token,
         };
       } else if (e.target.category.value === "local") {
         return {
@@ -63,6 +64,7 @@ const ConfirmOrder = ({
           orderId: generateUID(),
           waitTime: waitTime,
           paymentStatus: false,
+          token,
         };
       } else {
         return {
@@ -78,6 +80,7 @@ const ConfirmOrder = ({
           orderId: generateUID(),
           waitTime: waitTime,
           paymentStatus: false,
+          token,
         };
       }
     };

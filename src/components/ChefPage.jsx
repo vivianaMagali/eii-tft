@@ -13,7 +13,7 @@ import { db } from "../firebase/firebase";
 
 const ChefPage = () => {
   const navigate = useNavigate();
-  const { user, token } = useContext(FirebaseContext);
+  const { user } = useContext(FirebaseContext);
   const [commands, setCommands] = useState([]);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const ChefPage = () => {
         await updateDoc(docRef, {
           state: 3,
         });
-        sendPushNotification();
+        sendPushNotification(command.token);
       } catch (error) {
         console.log(error);
       }
@@ -82,21 +82,7 @@ const ChefPage = () => {
     navigate("/profile");
   };
 
-  const sendPushNotification = async () => {
-    // try {
-    //   await fetch("http://localhost:3001/send-notification", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       title: "Título de la Notificación",
-    //       body: "Cuerpo de la Notificación",
-    //     }),
-    //   });
-    // } catch (error) {
-    //   console.error("Error al enviar la notificación:", error);
-    // }
+  const sendPushNotification = async (token) => {
     try {
       await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
