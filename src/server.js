@@ -113,6 +113,7 @@ app.get("/api/subscribe-token", (req, res) => {
     "Access-Control-Allow-Origin",
     "http://localhost:3000",
     "https://main--flourishing-crostata-43d226.netlify.app/",
+    "https://f513-90-165-59-29.ngrok-free.app",
   );
 
   const sendToken = () => {
