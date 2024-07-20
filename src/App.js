@@ -38,7 +38,7 @@ function App() {
 
   useEffect(() => {
     const eventSource = new EventSource(
-      "https://fd29-90-165-59-29.ngrok-free.app/api/subscribe-token",
+      "https://f513-90-165-59-29.ngrok-free.app/api/subscribe-token",
     );
 
     eventSource.onopen = () => {
