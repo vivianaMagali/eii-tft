@@ -38,7 +38,7 @@ function App() {
 
   useEffect(() => {
     const eventSource = new EventSource(
-      "https://f513-90-165-59-29.ngrok-free.app/api/subscribe-token",
+      "https://ef9c-90-165-59-29.ngrok-free.app/api/subscribe-token",
     );
 
     eventSource.onopen = () => {
@@ -113,7 +113,7 @@ function App() {
               console.log("Token:", currentToken);
               // Aquí puedes enviar el token a tu servidor
               await fetch(
-                "https://f513-90-165-59-29.ngrok-free.app/api/token",
+                "https://ef9c-90-165-59-29.ngrok-free.app/api/token",
                 {
                   method: "POST",
                   headers: {
