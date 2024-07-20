@@ -12,9 +12,10 @@ import AdminPage from "./components/AdminPage";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Restaurant from "./components/Restaurant";
-import { db } from "./firebase/firebase";
+import { db, getToken, messaging, onMessage } from "./firebase/firebase";
 import Profile from "./components/Profile";
 import Record from "./components/Record";
+import { Toaster, toast } from "react-hot-toast";
 
 const auth = getAuth(credencialsFirebase);
 
@@ -22,6 +23,7 @@ function App() {
   const [user, setUser] = useState();
   const [record, setRecord] = useState([]);
   const [token, setToken] = useState();
+  const [notification, setNotification] = useState("");
 
   useEffect(() => {
     const eventSource = new EventSource(
@@ -81,11 +83,62 @@ function App() {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    // Solicitar permiso para recibir notificaciones
+    const requestPermission = async () => {
+      try {
+        // Solicita el permiso para mostrar notificaciones
+        Notification.requestPermission().then(async (permission) => {
+          if (permission === "granted") {
+            console.log("Notification permission granted.");
+
+            // Obtén el token de FCM
+            const currentToken = await getToken(messaging, {
+              vapidKey:
+                "BD4yqNdKuE0LwmjJz6HbUppqhmviT6Hhzv5E23gEZwUdYMDai9escAbBFvexzK2n3Gp2BaRd1Q8Th-8xDwodeOI",
+            });
+
+            if (currentToken) {
+              console.log("Token:", currentToken);
+              // Aquí puedes enviar el token a tu servidor
+              await fetch("/api/token", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token: currentToken }),
+              });
+            } else {
+              console.log("No se pudo obtener el token.");
+            }
+          } else {
+            console.log("Notification permission denied.");
+          }
+        });
+      } catch (error) {
+        console.error("Error al obtener el token:", error);
+      }
+    };
+
+    requestPermission();
+
+    // Configurar el receptor de mensajes
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log("Notificación recibida:", payload);
+      // Aquí puedes manejar la notificación
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   return (
     <div>
       <FirebaseContext.Provider
         value={{ user: user, record: record, token: token }}
       >
+        <Toaster />
         <Routes>
           <Route
             path="/"

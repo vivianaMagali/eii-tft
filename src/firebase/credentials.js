@@ -6,9 +6,9 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBxbdrtuQiF1R__wTJ4dE-ItFkF4lw34dE",
+  apiKey: process.env.REACT_APP_API_KEY,
   authDomain: "tft-bd.firebaseapp.com",
-  databaseURL: "https://tft-bd-default-rtdb.firebaseio.com",
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
   projectId: "tft-bd",
   storageBucket: "tft-bd.appspot.com",
   messagingSenderId: "606394326708",

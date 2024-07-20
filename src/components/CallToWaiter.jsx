@@ -6,7 +6,7 @@ const CallToWaiter = ({ setCallToWaiter }) => {
   const { token } = useContext(FirebaseContext);
 
   const getTheCheck = () => {
-    console.log("traer cuenta");
+    sendPushNotification();
   };
 
   const callTheWaiter = () => {

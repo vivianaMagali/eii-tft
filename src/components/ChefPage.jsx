@@ -13,7 +13,7 @@ import { db } from "../firebase/firebase";
 
 const ChefPage = () => {
   const navigate = useNavigate();
-  const { user } = useContext(FirebaseContext);
+  const { user, token } = useContext(FirebaseContext);
   const [commands, setCommands] = useState([]);
 
   useEffect(() => {
@@ -50,6 +50,7 @@ const ChefPage = () => {
         await updateDoc(docRef, {
           state: 3,
         });
+        sendPushNotification();
       } catch (error) {
         console.log(error);
       }
@@ -81,6 +82,41 @@ const ChefPage = () => {
     navigate("/profile");
   };
 
+  const sendPushNotification = async () => {
+    try {
+      await fetch("http://localhost:3001/send-notification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: "Título de la Notificación",
+          body: "Cuerpo de la Notificación",
+        }),
+      });
+    } catch (error) {
+      console.error("Error al enviar la notificación:", error);
+    }
+    // try {
+    //   await fetch("https://fcm.googleapis.com/fcm/send", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization:
+    //         "key=AAAAjS_rHrQ:APA91bFIpxZwmJhO_6DJ6Kf4uHKXYuz86RJGYbUPhWqm4Qco5TeQytN1s5HmxQTzY2oUfEqtt3n3fNqhfDWv-Wnaw50C41c2C4qBmQ4cJnozWExbtMTUv2DJZXEHgHtGRIhtV5LbG1HX", // Reemplaza con tu clave de servidor de Firebase
+    //     },
+    //     body: JSON.stringify({
+    //       to: token,
+    //       notification: {
+    //         title: "Título de la notificación",
+    //         body: "Cuerpo de la notificación",
+    //       },
+    //     }),
+    //   });
+    // } catch (error) {
+    //   console.error("Error al enviar la notificación:", error);
+    // }
+  };
   return (
     <>
       <div class="flex justify-between px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
