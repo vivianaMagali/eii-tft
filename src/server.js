@@ -31,34 +31,34 @@ app.post("/api/token", (req, res) => {
   res.status(200).send("Token recibido y almacenado.");
 });
 
-app.get("/api/subscribe-token", (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "http://localhost:3000",
-    "https://main--flourishing-crostata-43d226.netlify.app/",
-  );
+// app.get("/api/subscribe-token", (req, res) => {
+//   res.setHeader("Content-Type", "text/event-stream");
+//   res.setHeader("Cache-Control", "no-cache");
+//   res.setHeader("Connection", "keep-alive");
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "http://localhost:3000",
+//     "https://main--flourishing-crostata-43d226.netlify.app/",
+//   );
 
-  const sendToken = () => {
-    if (globalToken) {
-      res.write(`data: ${JSON.stringify({ token: globalToken })}\n\n`);
-    } else {
-      console.log("No token available");
-      res.write(`data: ${JSON.stringify({ error: "No token available" })}\n\n`);
-    }
-  };
+//   const sendToken = () => {
+//     if (globalToken) {
+//       res.write(`data: ${JSON.stringify({ token: globalToken })}\n\n`);
+//     } else {
+//       console.log("No token available");
+//       res.write(`data: ${JSON.stringify({ error: "No token available" })}\n\n`);
+//     }
+//   };
 
-  sendToken();
-  const intervalId = setInterval(sendToken, 10000);
+//   sendToken();
+//   const intervalId = setInterval(sendToken, 10000);
 
-  req.on("close", () => {
-    clearInterval(intervalId);
-    res.end();
-    console.log("Client disconnected from SSE");
-  });
-});
+//   req.on("close", () => {
+//     clearInterval(intervalId);
+//     res.end();
+//     console.log("Client disconnected from SSE");
+//   });
+// });
 
 // Endpoint para enviar una notificación
 app.post("/send-notification", async (req, res) => {
