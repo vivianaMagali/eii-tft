@@ -112,13 +112,16 @@ function App() {
             if (currentToken) {
               console.log("Token:", currentToken);
               // Aquí puedes enviar el token a tu servidor
-              await fetch("/api/token", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
+              await fetch(
+                "https://f513-90-165-59-29.ngrok-free.app/api/token",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ token: currentToken }),
                 },
-                body: JSON.stringify({ token: currentToken }),
-              });
+              );
             } else {
               console.log("No se pudo obtener el token.");
             }
