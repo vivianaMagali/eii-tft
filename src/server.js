@@ -10,7 +10,11 @@ admin.initializeApp({
 });
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://192.168.1.76:3000"], // Agrega todas las URLs que necesitas permitir
+  origin: [
+    "http://localhost:3000",
+    "http://192.168.1.76:3000",
+    "https://main--flourishing-crostata-43d226.netlify.app/",
+  ], // Agrega todas las URLs que necesitas permitir
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 };
@@ -31,7 +35,11 @@ app.get("/api/subscribe-token", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "http://localhost:3000",
+    "https://main--flourishing-crostata-43d226.netlify.app/",
+  );
 
   const sendToken = () => {
     if (globalToken) {
@@ -100,7 +108,11 @@ app.get("/api/subscribe-token", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "http://localhost:3000",
+    "https://main--flourishing-crostata-43d226.netlify.app/",
+  );
 
   const sendToken = () => {
     if (globalToken) {
