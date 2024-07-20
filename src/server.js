@@ -14,6 +14,7 @@ const corsOptions = {
     "http://localhost:3000",
     "http://192.168.1.76:3000",
     "https://main--flourishing-crostata-43d226.netlify.app/",
+    "https://f513-90-165-59-29.ngrok-free.app",
   ], // Agrega todas las URLs que necesitas permitir
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
