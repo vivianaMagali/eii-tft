@@ -111,6 +111,7 @@ function App() {
 
             if (currentToken) {
               console.log("Token:", currentToken);
+              setToken(currentToken);
               // Aquí puedes enviar el token a tu servidor
               await fetch(
                 "https://ef9c-90-165-59-29.ngrok-free.app/api/token",
