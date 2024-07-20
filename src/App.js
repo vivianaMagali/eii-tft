@@ -15,7 +15,7 @@ import Restaurant from "./components/Restaurant";
 import { db, getToken, messaging, onMessage } from "./firebase/firebase";
 import Profile from "./components/Profile";
 import Record from "./components/Record";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 const auth = getAuth(credencialsFirebase);
 
@@ -23,7 +23,6 @@ function App() {
   const [user, setUser] = useState();
   const [record, setRecord] = useState([]);
   const [token, setToken] = useState();
-  const [notification, setNotification] = useState("");
 
   // Registrar el service worker
   if ("serviceWorker" in navigator) {
