@@ -25,6 +25,18 @@ function App() {
   const [token, setToken] = useState();
   const [notification, setNotification] = useState("");
 
+  // Registrar el service worker
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js")
+      .then((registration) => {
+        console.log("Service Worker registrado con éxito:", registration);
+      })
+      .catch((error) => {
+        console.error("Error al registrar el Service Worker:", error);
+      });
+  }
+
   useEffect(() => {
     const eventSource = new EventSource(
       "http://localhost:3001/api/subscribe-token",
@@ -126,6 +138,9 @@ function App() {
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log("Notificación recibida:", payload);
       // Aquí puedes manejar la notificación
+      const notificationTitle = payload.notification.title;
+      const notificationBody = payload.notification.body;
+      alert(`Título: ${notificationTitle}\nMensaje: ${notificationBody}`);
     });
 
     return () => {

@@ -83,39 +83,38 @@ const ChefPage = () => {
   };
 
   const sendPushNotification = async () => {
-    try {
-      await fetch("http://localhost:3001/send-notification", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: "Título de la Notificación",
-          body: "Cuerpo de la Notificación",
-        }),
-      });
-    } catch (error) {
-      console.error("Error al enviar la notificación:", error);
-    }
     // try {
-    //   await fetch("https://fcm.googleapis.com/fcm/send", {
+    //   await fetch("http://localhost:3001/send-notification", {
     //     method: "POST",
     //     headers: {
     //       "Content-Type": "application/json",
-    //       Authorization:
-    //         "key=AAAAjS_rHrQ:APA91bFIpxZwmJhO_6DJ6Kf4uHKXYuz86RJGYbUPhWqm4Qco5TeQytN1s5HmxQTzY2oUfEqtt3n3fNqhfDWv-Wnaw50C41c2C4qBmQ4cJnozWExbtMTUv2DJZXEHgHtGRIhtV5LbG1HX", // Reemplaza con tu clave de servidor de Firebase
     //     },
     //     body: JSON.stringify({
-    //       to: token,
-    //       notification: {
-    //         title: "Título de la notificación",
-    //         body: "Cuerpo de la notificación",
-    //       },
+    //       title: "Título de la Notificación",
+    //       body: "Cuerpo de la Notificación",
     //     }),
     //   });
     // } catch (error) {
     //   console.error("Error al enviar la notificación:", error);
     // }
+    try {
+      await fetch("https://fcm.googleapis.com/fcm/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `key=${process.env.REACT_APP_KEY_SERVER}`, // Reemplaza con tu clave de servidor de Firebase
+        },
+        body: JSON.stringify({
+          to: token,
+          notification: {
+            title: "Título de la notificación",
+            body: "Cuerpo de la notificación",
+          },
+        }),
+      });
+    } catch (error) {
+      console.error("Error al enviar la notificación:", error);
+    }
   };
   return (
     <>
