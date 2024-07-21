@@ -11,7 +11,7 @@ const Record = ({ setShowRecord }) => {
       aria-hidden="true"
       class="fixed z-10 inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
     >
-      <div class="relative w-6/12 h-5/6 bg-white rounded overflow-auto">
+      <div class="relative w-full sm:w-3/4 md:w-1/2 lg:w-1/4 h-5/6 bg-white rounded overflow-auto">
         <div class="flex items-center justify-between p-4 rounded-lg">
           <svg
             class="h-10 w-10 text-teal-200"

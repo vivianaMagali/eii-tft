@@ -64,7 +64,7 @@ const Restaurant = () => {
             resetQuantities={resetQuantities}
           />
         )}
-        <div class="flex flex-row justify-center my-14 px-8">
+        <div class="flex sm:w-full sm:px-0 flex-col lg:flex-row justify-center my-14 px-8">
           <div class="flex flex-col justify-center">
             <span class="px-8 font-bold uppercase flex justify-center">
               Comidas
@@ -111,16 +111,17 @@ const Restaurant = () => {
                 ))}
             </div>
           </div>
-
-          <OrderSummary
-            class="duration-75"
-            orders={orders}
-            setShowConfirmOrderModal={setShowConfirmOrderModal}
-            showOrderSummary={showOrderSummary}
-            setShowOrderSummary={setShowOrderSummary}
-            total={total}
-            setTotal={setTotal}
-          />
+          <div class="mt-8 lg:mt-0 lg:ml-8 lg:w-2/3">
+            <OrderSummary
+              class="duration-75"
+              orders={orders}
+              setShowConfirmOrderModal={setShowConfirmOrderModal}
+              showOrderSummary={showOrderSummary}
+              setShowOrderSummary={setShowOrderSummary}
+              total={total}
+              setTotal={setTotal}
+            />
+          </div>
         </div>
       </RestaurantContext.Provider>
     </div>

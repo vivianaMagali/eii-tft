@@ -13,7 +13,7 @@ const WaitTime = ({ setShowWaitTime }) => {
       aria-hidden="true"
       class="fixed z-10 inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
     >
-      <div class="relative w-1/4 h-5/6 bg-white rounded overflow-auto">
+      <div class="relative w-full sm:w-3/4 md:w-1/2 lg:w-1/4 h-5/6 bg-white rounded overflow-auto">
         <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
           <img src={order} alt="icon-order" class="h-12 w-12" />
           <span class="text-gray-900 text-lg font-semibold">
