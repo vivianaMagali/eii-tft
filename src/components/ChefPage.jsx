@@ -82,13 +82,14 @@ const ChefPage = () => {
     navigate("/profile");
   };
 
+  // Endpoint para enviar la notificación push al dispositivo que realizó el pedido
   const sendPushNotification = async (token) => {
     try {
       await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `key=${process.env.REACT_APP_KEY_SERVER}`, // Reemplaza con tu clave de servidor de Firebase
+          Authorization: `key=${process.env.REACT_APP_KEY_SERVER}`,
         },
         body: JSON.stringify({
           to: token,

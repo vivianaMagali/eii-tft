@@ -15,7 +15,7 @@ const corsOptions = {
     "http://192.168.1.76:3000",
     "https://main--flourishing-crostata-43d226.netlify.app",
     "https://ef9c-90-165-59-29.ngrok-free.app",
-  ], // Agrega todas las URLs que necesitas permitir
+  ],
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 };
@@ -25,6 +25,7 @@ app.use(bodyParser.json());
 
 let globalToken = "initialToken";
 
+// Endpoint para obtener del cliente el token y lo guardo en la variable globalToken
 app.post("/api/token", (req, res) => {
   const token = req.body.token;
   globalToken = token;
@@ -32,79 +33,33 @@ app.post("/api/token", (req, res) => {
   res.status(200).send("Token recibido y almacenado.");
 });
 
-// app.get("/api/subscribe-token", (req, res) => {
-//   res.setHeader("Content-Type", "text/event-stream");
-//   res.setHeader("Cache-Control", "no-cache");
-//   res.setHeader("Connection", "keep-alive");
-//   res.setHeader(
-//     "Access-Control-Allow-Origin",
-//     "http://localhost:3000",
-//     "https://main--flourishing-crostata-43d226.netlify.app/",
-//   );
-
-//   const sendToken = () => {
-//     if (globalToken) {
-//       res.write(`data: ${JSON.stringify({ token: globalToken })}\n\n`);
-//     } else {
-//       console.log("No token available");
-//       res.write(`data: ${JSON.stringify({ error: "No token available" })}\n\n`);
-//     }
-//   };
-
-//   sendToken();
-//   const intervalId = setInterval(sendToken, 10000);
-
-//   req.on("close", () => {
-//     clearInterval(intervalId);
-//     res.end();
-//     console.log("Client disconnected from SSE");
-//   });
-// });
-
 // Endpoint para enviar una notificación
-app.post("/send-notification", async (req, res) => {
-  const { title, body } = req.body;
-
-  if (!globalToken || globalToken === "initialToken") {
-    return res.status(400).send("Token no disponible.");
-  }
-
-  const message = {
-    notification: {
-      title: title,
-      body: body,
-    },
-    token: globalToken, // Usa el token almacenado
-  };
-
-  try {
-    const response = await admin.messaging().send(message);
-    console.log("Notificación enviada:", response);
-    res.status(200).send("Notificación enviada con éxito");
-  } catch (error) {
-    console.error("Error al enviar notificación:", error);
-    res.status(500).send("Error al enviar notificación");
-  }
-});
-
 // app.post("/send-notification", async (req, res) => {
+//   const { title, body } = req.body;
+
+//   if (!globalToken || globalToken === "initialToken") {
+//     return res.status(400).send("Token no disponible.");
+//   }
+
 //   const message = {
 //     notification: {
-//       title: req.body.title,
-//       body: req.body.body,
+//       title: title,
+//       body: body,
 //     },
-//     token: globalToken, // El token del dispositivo a notificar
+//     token: globalToken,
 //   };
 
 //   try {
-//     await admin.messaging().send(message);
-//     res.status(200).send("Notification sent successfully");
+//     const response = await admin.messaging().send(message);
+//     console.log("Notificación enviada:", response);
+//     res.status(200).send("Notificación enviada con éxito");
 //   } catch (error) {
-//     console.error("Error sending notification:", error);
-//     res.status(500).send("Error sending notification");
+//     console.error("Error al enviar notificación:", error);
+//     res.status(500).send("Error al enviar notificación");
 //   }
 // });
 
+// Endpoint para enviar el token al que esta subscrito en el cliente
 app.get("/api/subscribe-token", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");

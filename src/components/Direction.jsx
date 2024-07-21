@@ -55,6 +55,7 @@ const Direction = ({ restaurant, setPlace }) => {
           class="bg-gray-50 border my-2 border-gray-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:focus:ring-primary-500 dark:focus:border-primary-500"
           placeholder="Nº de mesa."
           name="table"
+          type="number"
         />
       )}
 

@@ -13,14 +13,16 @@ const CallToWaiter = ({ setCallToWaiter }) => {
     sendPushNotification();
   };
 
+  // Endpoint para enviar la notificación push al dispositivo que realizó el pedido
+  // a quien le tiene que llegar la notificacion? en este caso al camarero que la pidió
+  // el token del dispositivo se guardará en bd cada vez que el usuario interactue con la app
   const sendPushNotification = async () => {
     try {
       await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "key=AAAAjS_rHrQ:APA91bFIpxZwmJhO_6DJ6Kf4uHKXYuz86RJGYbUPhWqm4Qco5TeQytN1s5HmxQTzY2oUfEqtt3n3fNqhfDWv-Wnaw50C41c2C4qBmQ4cJnozWExbtMTUv2DJZXEHgHtGRIhtV5LbG1HX", // Reemplaza con tu clave de servidor de Firebase
+          Authorization: `key=${process.env.REACT_APP_KEY_SERVER}`,
         },
         body: JSON.stringify({
           to: token,

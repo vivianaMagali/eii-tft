@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logo from "../assets/logo-removebg-preview.png";
 import { useNavigate } from "react-router-dom";
 import { setDoc, doc, getFirestore, getDoc } from "firebase/firestore";
@@ -10,6 +10,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { db } from "../firebase/firebase";
+import { FirebaseContext } from "../firebase";
 const auth = getAuth(appFirebase);
 const firestore = getFirestore();
 
@@ -18,6 +19,7 @@ const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [error, setError] = useState();
   const navigate = useNavigate();
+  const { token } = useContext(FirebaseContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,13 +40,15 @@ const Login = () => {
           // Redirect based on user role
           if (userRole === "Administrador") {
             navigate("/admin");
-          } else if (userRole === "Camarero") {
-            navigate("/waiter");
           } else if (userRole === "Cajero") {
             navigate("/cashier");
           } else if (userRole === "Cocinero") {
+            //guardar o actualizar el token si el usuario es un cocinero
+            await setDoc(userDocRef, { token: token, ...userDoc.data() });
             navigate("/chef");
           } else {
+            //guardar o actualizar el token si el usuario es un cliente
+            await setDoc(userDocRef, { token: token, ...userDoc.data() });
             navigate("/home");
           }
         } else {
@@ -71,8 +75,11 @@ const Login = () => {
           email: email.value,
           name: name.value,
           phone: phone.value,
+          token,
+          uidUser: user.uid,
         };
         const userRef = doc(db, "users", user.uid);
+        //obtener token y almacenarlo en la bd con el usuario
         await setDoc(userRef, userData);
         setError(undefined);
         navigate("/home");

@@ -36,45 +36,49 @@ function App() {
       });
   }
 
-  useEffect(() => {
-    const eventSource = new EventSource(
-      "https://ef9c-90-165-59-29.ngrok-free.app/api/subscribe-token",
-    );
+  // useEffect(() => {
+  //   const eventSource = new EventSource(
+  //     "https://ef9c-90-165-59-29.ngrok-free.app/api/subscribe-token",
+  //   );
 
-    eventSource.onopen = () => {
-      console.log("Connection to server opened.");
-    };
+  //   eventSource.onopen = () => {
+  //     console.log("Connection to server opened.");
+  //   };
 
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.token) {
-          setToken(data.token);
-        } else if (data.error) {
-          console.error("Error received:", data.error);
-        } else {
-          console.log("No token found in the response");
-        }
-      } catch (error) {
-        console.error("Error parsing event data:", error);
-      }
-    };
+  //   eventSource.onmessage = (event) => {
+  //     try {
+  //       const data = JSON.parse(event.data);
+  //       console.log("dataaaaaa", data);
+  //       if (data.token) {
+  //         setTokenMobile(data.token);
+  //       } else if (data.error) {
+  //         console.error("Error received:", data.error);
+  //       } else {
+  //         console.log("No token found in the response");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parsing event data:", error);
+  //     }
+  //   };
 
-    eventSource.onerror = (error) => {
-      console.error("Error with SSE:", error);
-      eventSource.close();
-    };
+  //   eventSource.onerror = (error) => {
+  //     console.error("Error with SSE:", error);
+  //     console.error("EventSource readyState:", eventSource.readyState);
+  //     console.error("EventSource URL:", eventSource.url);
+  //     eventSource.close();
+  //   };
 
-    return () => {
-      eventSource.close();
-    };
-  }, []);
+  //   return () => {
+  //     eventSource.close();
+  //   };
+  // }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        //si existe un usuario, guardar el token obtenido en la bd con el usuario
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        setUser({ uid: user.uid, ...userDoc.data() });
+        setUser({ uid: user.uid, token: token, ...userDoc.data() });
         const userDocRef = doc(db, "users", user.uid);
         const recordCollectionRef = collection(userDocRef, "record");
 
@@ -92,7 +96,7 @@ function App() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     // Solicitar permiso para recibir notificaciones
@@ -112,7 +116,7 @@ function App() {
             if (currentToken) {
               console.log("Token:", currentToken);
               setToken(currentToken);
-              // Aquí puedes enviar el token a tu servidor
+              // Enviar el token a tu servidor
               await fetch(
                 "https://ef9c-90-165-59-29.ngrok-free.app/api/token",
                 {
@@ -154,7 +158,11 @@ function App() {
   return (
     <div>
       <FirebaseContext.Provider
-        value={{ user: user, record: record, token: token }}
+        value={{
+          user: user,
+          record: record,
+          token: token,
+        }}
       >
         <Toaster />
         <Routes>
