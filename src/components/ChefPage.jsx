@@ -5,7 +5,6 @@ import {
   doc,
   updateDoc,
   getDoc,
-  getDocs,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
