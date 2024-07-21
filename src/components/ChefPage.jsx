@@ -5,6 +5,7 @@ import {
   doc,
   updateDoc,
   getDoc,
+  getDocs,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
@@ -15,6 +16,7 @@ const ChefPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(FirebaseContext);
   const [commands, setCommands] = useState([]);
+  const [tokensWaiter, setTokensWaiter] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -50,7 +52,7 @@ const ChefPage = () => {
         await updateDoc(docRef, {
           state: 3,
         });
-        sendPushNotification(command.token);
+        sendPushNotification(command.token, command.table);
       } catch (error) {
         console.log(error);
       }
@@ -82,8 +84,22 @@ const ChefPage = () => {
     navigate("/profile");
   };
 
+  // Obtengo los tokens de los camareros
+  useEffect(() => {
+    const usersCollectionRef = collection(db, "users");
+
+    onSnapshot(usersCollectionRef, (snapshot) => {
+      setTokensWaiter(
+        snapshot.docs
+          .filter((doc) => doc.data().role === "Camarero")
+          .map((doc) => doc.data().token),
+      );
+    });
+  }, []);
+
   // Endpoint para enviar la notificación push al dispositivo que realizó el pedido
-  const sendPushNotification = async (token) => {
+  const sendPushNotification = async (token, table) => {
+    const isSendCommandByWaiter = tokensWaiter.includes(token);
     try {
       await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
@@ -92,10 +108,14 @@ const ChefPage = () => {
           Authorization: `key=${process.env.REACT_APP_KEY_SERVER}`,
         },
         body: JSON.stringify({
-          to: token,
+          // si el pedido lo realizó un cliente en mesa, la notificación se envían a todos los camarareros
+          // si el pedido la realizó un camarero, entonces la notificación le llega al camarero
+          // si el pedido la realizó un cliente sin mesa, entonces la notificación le llega al cliente.
+          registration_ids:
+            table && !isSendCommandByWaiter ? tokensWaiter : [token],
           notification: {
             title: "Título de la notificación",
-            body: "Cuerpo de la notificación",
+            body: `Cuerpo de la notificación ${table}`,
           },
         }),
       });

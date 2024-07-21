@@ -64,7 +64,7 @@ const Restaurant = () => {
             resetQuantities={resetQuantities}
           />
         )}
-        <div class="flex sm:w-full sm:px-0 flex-col lg:flex-row justify-center my-14 px-8">
+        <div class="flex flex-col lg:flex-row justify-center my-14 px-8">
           <div class="flex flex-col justify-center">
             <span class="px-8 font-bold uppercase flex justify-center">
               Comidas
