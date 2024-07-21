@@ -15,7 +15,7 @@ const auth = getAuth(appFirebase);
 const firestore = getFirestore();
 
 const Login = () => {
-  const [registering, setRegistering] = useState(false);
+  const [registering, setRegistering] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [error, setError] = useState();
   const navigate = useNavigate();
@@ -48,6 +48,7 @@ const Login = () => {
             navigate("/chef");
           } else {
             //guardar o actualizar el token si el usuario es un cliente
+            console.log("token", token);
             await setDoc(userDocRef, { token: token, ...userDoc.data() });
             navigate("/home");
           }

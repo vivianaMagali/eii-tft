@@ -18,7 +18,6 @@ const ConfirmOrder = ({
   const [place, setPlace] = useState(null);
   const { id } = useParams();
   const { user, token } = useContext(FirebaseContext);
-  console.log("token", token);
   const saveOrder = async (e) => {
     e.preventDefault();
     const dateNow = new Date();

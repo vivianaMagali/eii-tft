@@ -4,8 +4,6 @@ import credencialsFirebase from "./firebase/credentials";
 import { collection, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { FirebaseContext } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
-import WaiterPage from "./components/WaiterPage";
 import ChefPage from "./components/ChefPage";
 import CashierPage from "./components/CashierPage";
 import AdminPage from "./components/AdminPage";
@@ -16,6 +14,8 @@ import { db, getToken, messaging, onMessage } from "./firebase/firebase";
 import Profile from "./components/Profile";
 import Record from "./components/Record";
 import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { Navigate } from "react-router-dom";
 
 const auth = getAuth(credencialsFirebase);
 
@@ -166,19 +166,84 @@ function App() {
       >
         <Toaster />
         <Routes>
+          <Route path="/" element={<Login />} />
           <Route
-            path="/"
-            element={user ? <Home email={user.email} /> : <Login />}
+            path="/admin"
+            element={
+              <ProtectedRoute
+                allowedRoles={["Administrador"]}
+                userRole={user?.role}
+                redirectTo="/admin"
+              >
+                <AdminPage />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/waiter" element={<WaiterPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/cashier" element={<CashierPage />} />
-          <Route path="/chef" element={<ChefPage />} />
+          <Route
+            path="/cashier"
+            element={
+              <ProtectedRoute
+                allowedRoles={["Cajero"]}
+                userRole={user?.role}
+                redirectTo="/cashier"
+              >
+                <CashierPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chef"
+            element={
+              <ProtectedRoute
+                allowedRoles={["Cocinero"]}
+                userRole={user?.role}
+                redirectTo="/chef"
+              >
+                <ChefPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute
+                allowedRoles={[undefined, "Camarero"]}
+                userRole={user?.role}
+                redirectTo="/home"
+              >
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/restaurant/:id"
+            element={
+              <ProtectedRoute
+                allowedRoles={[undefined, "Camarero"]}
+                userRole={user?.role}
+                redirectTo="/restaurant/:id"
+              >
+                <Restaurant />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/:uidUser/record"
+            element={
+              <ProtectedRoute
+                allowedRoles={[undefined]}
+                userRole={user?.role}
+                redirectTo="/:uidUser/record"
+              >
+                <Record />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
-          <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/restaurant/:id" element={<Restaurant />} />
-          <Route path="/:uidUser/record" element={<Record />} />
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </FirebaseContext.Provider>
     </div>
