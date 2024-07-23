@@ -1,8 +1,13 @@
 import React, { useState, useContext } from "react";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
-import { db, storage } from "../firebase/firebase";
+import {
+  db,
+  storage,
+  getDownloadURL,
+  uploadBytes,
+  ref,
+} from "../firebase/firebase";
 import { FirebaseContext } from "../firebase";
-import { getDownloadURL, uploadBytes, ref } from "firebase/storage";
 import ModalConfirmation from "./ModalConfirmation";
 import { typeProducts } from "../utils";
 

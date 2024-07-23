@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import firebaseConfig from "./credentials";
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { getStorage, getDownloadURL, uploadBytes, ref } from "firebase/storage";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import {
   getAuth,
@@ -31,4 +31,7 @@ export {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  getDownloadURL,
+  uploadBytes,
+  ref,
 };
