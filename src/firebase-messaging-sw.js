@@ -1,24 +1,8 @@
-// Importar los módulos necesarios desde Firebase
-import { initializeApp } from "firebase/app";
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
-
-// Configuración de Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyBxbdrtuQiF1R__wTJ4dE-ItFkF4lw34dE",
-  authDomain: "tft-bd.firebaseapp.com",
-  databaseURL: "https://tft-bd-default-rtdb.firebaseio.com",
-  projectId: "tft-bd",
-  storageBucket: "tft-bd.appspot.com",
-  messagingSenderId: "606394326708",
-  appId: "1:606394326708:web:1280aeadb0d64d4da701e1",
-  measurementId: "G-10V5RBVRL5",
-};
-
-// Inicializar Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+import { appFirebase } from "./firebase/firebase";
 
 // Obtener la instancia de Firebase Messaging
-const messaging = getMessaging(firebaseApp);
+const messaging = getMessaging(appFirebase);
 
 // Manejar los mensajes en segundo plano
 onBackgroundMessage(messaging, (payload) => {

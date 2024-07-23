@@ -72,24 +72,12 @@ function App() {
 
             // Obtén el token de FCM
             const currentToken = await getToken(messaging, {
-              vapidKey:
-                "BD4yqNdKuE0LwmjJz6HbUppqhmviT6Hhzv5E23gEZwUdYMDai9escAbBFvexzK2n3Gp2BaRd1Q8Th-8xDwodeOI",
+              vapidKey: process.env.REACT_APP_VAPID_KEY,
             });
 
             if (currentToken) {
               console.log("Token:", currentToken);
               setToken(currentToken);
-              // Enviar el token a tu servidor
-              await fetch(
-                "https://6966-90-165-59-29.ngrok-free.app/api/token",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ token: currentToken }),
-                },
-              );
             } else {
               console.log("No se pudo obtener el token.");
             }
