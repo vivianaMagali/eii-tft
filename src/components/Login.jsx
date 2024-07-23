@@ -3,15 +3,13 @@ import logo from "../assets/logo-removebg-preview.png";
 import { useNavigate } from "react-router-dom";
 import { setDoc, doc, getFirestore, getDoc } from "firebase/firestore";
 
-import appFirebase from "../firebase/firebase";
 import {
-  getAuth,
+  db,
+  auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-} from "firebase/auth";
-import { db } from "../firebase/firebase";
+} from "../firebase/firebase";
 import { FirebaseContext } from "../firebase";
-const auth = getAuth(appFirebase);
 const firestore = getFirestore();
 
 const Login = () => {

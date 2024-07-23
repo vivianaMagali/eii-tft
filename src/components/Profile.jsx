@@ -1,12 +1,10 @@
 import React, { useContext } from "react";
-import { getAuth, signOut } from "firebase/auth";
-import appFirebase from "../firebase/firebase";
+import { auth, signOut } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { FirebaseContext } from "../firebase";
 
 const Profile = () => {
-  const auth = getAuth(appFirebase);
   const navigate = useNavigate();
   const { user } = useContext(FirebaseContext);
 

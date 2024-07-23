@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router";
-import credencialsFirebase from "./firebase/firebase";
 import { collection, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { FirebaseContext } from "./firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import ChefPage from "./components/ChefPage";
 import CashierPage from "./components/CashierPage";
 import AdminPage from "./components/AdminPage";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Restaurant from "./components/Restaurant";
-import { db, getToken, messaging, onMessage } from "./firebase/firebase";
+import {
+  db,
+  auth,
+  getToken,
+  messaging,
+  onMessage,
+  onAuthStateChanged,
+} from "./firebase/firebase";
 import Profile from "./components/Profile";
 import Record from "./components/Record";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Navigate } from "react-router-dom";
-
-const auth = getAuth(credencialsFirebase);
 
 function App() {
   const [user, setUser] = useState();
@@ -76,7 +79,6 @@ function App() {
             });
 
             if (currentToken) {
-              console.log("Token:", currentToken);
               setToken(currentToken);
             } else {
               console.log("No se pudo obtener el token.");
@@ -94,8 +96,7 @@ function App() {
 
     // Configurar el receptor de mensajes
     const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Notificación recibida:", payload);
-      // Aquí puedes manejar la notificación
+      // Aquí debo manejar la configuración para las notificaciones. Un componente Toaster
       const notificationTitle = payload.notification.title;
       const notificationBody = payload.notification.body;
       alert(`Título: ${notificationTitle}\nMensaje: ${notificationBody}`);
