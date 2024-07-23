@@ -14,7 +14,7 @@ const corsOptions = {
     "http://localhost:3000",
     "http://192.168.1.76:3000",
     "https://main--flourishing-crostata-43d226.netlify.app",
-    "https://ef9c-90-165-59-29.ngrok-free.app",
+    "https://6966-90-165-59-29.ngrok-free.app",
   ],
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
@@ -66,7 +66,7 @@ app.get("/api/subscribe-token", (req, res) => {
   res.setHeader("Connection", "keep-alive");
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://ef9c-90-165-59-29.ngrok-free.app",
+    "https://6966-90-165-59-29.ngrok-free.app",
   );
 
   const sendToken = () => {

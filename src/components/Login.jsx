@@ -3,7 +3,7 @@ import logo from "../assets/logo-removebg-preview.png";
 import { useNavigate } from "react-router-dom";
 import { setDoc, doc, getFirestore, getDoc } from "firebase/firestore";
 
-import appFirebase from "../firebase/credentials";
+import appFirebase from "../firebase/firebase";
 import {
   getAuth,
   createUserWithEmailAndPassword,

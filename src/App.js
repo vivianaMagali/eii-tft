@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router";
-import credencialsFirebase from "./firebase/credentials";
+import credencialsFirebase from "./firebase/firebase";
 import { collection, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { FirebaseContext } from "./firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -35,43 +35,6 @@ function App() {
         console.error("Error al registrar el Service Worker:", error);
       });
   }
-
-  // useEffect(() => {
-  //   const eventSource = new EventSource(
-  //     "https://ef9c-90-165-59-29.ngrok-free.app/api/subscribe-token",
-  //   );
-
-  //   eventSource.onopen = () => {
-  //     console.log("Connection to server opened.");
-  //   };
-
-  //   eventSource.onmessage = (event) => {
-  //     try {
-  //       const data = JSON.parse(event.data);
-  //       console.log("dataaaaaa", data);
-  //       if (data.token) {
-  //         setTokenMobile(data.token);
-  //       } else if (data.error) {
-  //         console.error("Error received:", data.error);
-  //       } else {
-  //         console.log("No token found in the response");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error parsing event data:", error);
-  //     }
-  //   };
-
-  //   eventSource.onerror = (error) => {
-  //     console.error("Error with SSE:", error);
-  //     console.error("EventSource readyState:", eventSource.readyState);
-  //     console.error("EventSource URL:", eventSource.url);
-  //     eventSource.close();
-  //   };
-
-  //   return () => {
-  //     eventSource.close();
-  //   };
-  // }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -118,7 +81,7 @@ function App() {
               setToken(currentToken);
               // Enviar el token a tu servidor
               await fetch(
-                "https://ef9c-90-165-59-29.ngrok-free.app/api/token",
+                "https://6966-90-165-59-29.ngrok-free.app/api/token",
                 {
                   method: "POST",
                   headers: {
