@@ -154,7 +154,7 @@ const ChefPage = () => {
                     key={command.id}
                   >
                     {command.description && (
-                      <span class="text-xl px-6 font-bold italic text-red-400">
+                      <span class="mx-6 block text-xl font-bold italic text-red-400">
                         Comentario:({command.description})
                       </span>
                     )}
@@ -191,7 +191,7 @@ const ChefPage = () => {
                     key={command.id}
                   >
                     {command.description && (
-                      <span class="text-xl px-6 font-bold italic text-red-400">
+                      <span class="mx-6 block text-xl font-bold italic text-red-400">
                         Comentario:({command.description})
                       </span>
                     )}
