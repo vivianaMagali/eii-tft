@@ -10,6 +10,7 @@ import {
   signInWithEmailAndPassword,
 } from "../firebase/firebase";
 import { FirebaseContext } from "../firebase";
+import { typeRole } from "../utils";
 const firestore = getFirestore();
 
 const Login = () => {
@@ -36,17 +37,16 @@ const Login = () => {
           const userRole = userData.role;
 
           // Redirect based on user role
-          if (userRole === "Administrador") {
+          if (userRole === typeRole.admin) {
             navigate("/admin");
-          } else if (userRole === "Cajero") {
+          } else if (userRole === typeRole.cashier) {
             navigate("/cashier");
-          } else if (userRole === "Cocinero") {
+          } else if (userRole === typeRole.chef) {
             //guardar o actualizar el token si el usuario es un cocinero
             await setDoc(userDocRef, { token: token, ...userDoc.data() });
             navigate("/chef");
           } else {
-            //guardar o actualizar el token si el usuario es un cliente
-            console.log("token", token);
+            //guardar o actualizar el token si el usuario si es un cliente
             await setDoc(userDocRef, { token: token, ...userDoc.data() });
             navigate("/home");
           }

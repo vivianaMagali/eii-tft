@@ -71,6 +71,13 @@ export const typeProducts = Object.freeze({
   drink: "Bebida",
 });
 
+export const typeRole = Object.freeze({
+  waiter: "Camarero",
+  admin: "Administrador",
+  chef: "Cocinero",
+  cashier: "Cajero",
+});
+
 export const getKeyByValueOfStateOrder = (value) => {
   return (
     Object.keys(stateOrders).find((key) => stateOrders[key] === value) || null

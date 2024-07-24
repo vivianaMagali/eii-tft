@@ -21,6 +21,7 @@ import Record from "./components/Record";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Navigate } from "react-router-dom";
+import { typeRole } from "./utils";
 
 function App() {
   const [user, setUser] = useState();
@@ -123,7 +124,7 @@ function App() {
             path="/admin"
             element={
               <ProtectedRoute
-                allowedRoles={["Administrador"]}
+                allowedRoles={[typeRole.admin]}
                 userRole={user?.role}
                 redirectTo="/admin"
               >
@@ -135,7 +136,7 @@ function App() {
             path="/cashier"
             element={
               <ProtectedRoute
-                allowedRoles={["Cajero"]}
+                allowedRoles={[typeRole.cashier]}
                 userRole={user?.role}
                 redirectTo="/cashier"
               >
@@ -147,7 +148,7 @@ function App() {
             path="/chef"
             element={
               <ProtectedRoute
-                allowedRoles={["Cocinero"]}
+                allowedRoles={[typeRole.chef]}
                 userRole={user?.role}
                 redirectTo="/chef"
               >
@@ -156,31 +157,9 @@ function App() {
             }
           />
 
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute
-                allowedRoles={[undefined, "Camarero"]}
-                userRole={user?.role}
-                redirectTo="/home"
-              >
-                <Home />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/home" element={<Home />} />
 
-          <Route
-            path="/restaurant/:id"
-            element={
-              <ProtectedRoute
-                allowedRoles={[undefined, "Camarero"]}
-                userRole={user?.role}
-                redirectTo="/restaurant/:id"
-              >
-                <Restaurant />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/restaurant/:id" element={<Restaurant />} />
           <Route
             path="/:uidUser/record"
             element={

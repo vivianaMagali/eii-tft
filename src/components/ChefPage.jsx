@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
 import logo from "../assets/logo-removebg-preview.png";
 import { db } from "../firebase/firebase";
+import { typeRole } from "../utils";
 
 const ChefPage = () => {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ const ChefPage = () => {
     onSnapshot(usersCollectionRef, (snapshot) => {
       setTokensWaiter(
         snapshot.docs
-          .filter((doc) => doc.data().role === "Camarero")
+          .filter((doc) => doc.data().role === typeRole.waiter)
           .map((doc) => doc.data().token),
       );
     });

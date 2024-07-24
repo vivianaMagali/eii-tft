@@ -104,7 +104,7 @@ const AdminPage = () => {
               <th>Nombre</th>
               <th>Ingredientes</th>
               <th>Precio</th>
-              <th>Cantidad</th>
+              <th>Cantidad (kg o unidad)</th>
               <th>Tipo</th>
               <th>Productor</th>
               <th></th>
@@ -116,7 +116,7 @@ const AdminPage = () => {
               <tr key={product.uid}>
                 <td>{product.name}</td>
                 <td>{product.ingredients}</td>
-                <td>{product.price}</td>
+                <td>{product.price}€</td>
                 <td>{product.amount}</td>
                 <td>{getProductType(product.type)}</td>
                 <td>{product.producer}</td>
