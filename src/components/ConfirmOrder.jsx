@@ -29,7 +29,9 @@ const ConfirmOrder = ({
     const querySnapshot = await getDocs(comandasRef);
 
     const orderList = querySnapshot.size;
-    const waitTime = Math.floor(orderList * restaurant.waitTime);
+    const waitTime = Math.floor(
+      orderList * restaurant.basic_information.waitTime,
+    );
 
     const getData = () => {
       if (e.target.category.value === "home") {
