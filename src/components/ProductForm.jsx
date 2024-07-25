@@ -78,7 +78,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
         user.uidRestaurant,
         collectionSelected,
       );
-      // Eliminar el campo ingredients si el tipo es bebida
+      // Eliminar el campo ingredients si el tipo es Bebida
       let formDataUpdate;
       if (formData.type === typeProducts.drink) {
         const { ingredients, ...rest } = formData;
@@ -86,7 +86,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
       }
       if (isEditMode) {
         const docRef = doc(collectionRef, productSelected.uid);
-        await updateDoc(docRef, formDataUpdate);
+        await updateDoc(docRef, formDataUpdate || formData);
       } else {
         const collectionRef = collection(
           db,
@@ -94,7 +94,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
           user.uidRestaurant,
           collectionSelected,
         );
-        const docRef = await addDoc(collectionRef, formDataUpdate);
+        const docRef = await addDoc(collectionRef, formDataUpdate || formData);
         await updateDoc(docRef, { uid: docRef.id });
       }
     } catch (error) {
@@ -108,6 +108,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
     e.preventDefault();
     setShowConfirmOrderModal(true);
   };
+
   return (
     <div
       id="crud-modal"
