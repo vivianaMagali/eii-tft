@@ -85,7 +85,6 @@ const ConfirmOrder = ({
       }
     };
     const docData = getData();
-    console.log("docData", docData);
     try {
       const docRef = await addDoc(comandasRef, docData);
       const updatedDocData = {

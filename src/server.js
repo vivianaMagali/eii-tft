@@ -33,32 +33,6 @@ app.post("/api/token", (req, res) => {
   res.status(200).send("Token recibido y almacenado.");
 });
 
-// Endpoint para enviar una notificación
-// app.post("/send-notification", async (req, res) => {
-//   const { title, body } = req.body;
-
-//   if (!globalToken || globalToken === "initialToken") {
-//     return res.status(400).send("Token no disponible.");
-//   }
-
-//   const message = {
-//     notification: {
-//       title: title,
-//       body: body,
-//     },
-//     token: globalToken,
-//   };
-
-//   try {
-//     const response = await admin.messaging().send(message);
-//     console.log("Notificación enviada:", response);
-//     res.status(200).send("Notificación enviada con éxito");
-//   } catch (error) {
-//     console.error("Error al enviar notificación:", error);
-//     res.status(500).send("Error al enviar notificación");
-//   }
-// });
-
 // Endpoint para enviar el token al que esta subscrito en el cliente
 app.get("/api/subscribe-token", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");

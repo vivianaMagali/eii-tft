@@ -6,11 +6,6 @@ const messaging = getMessaging(appFirebase);
 
 // Manejar los mensajes en segundo plano
 onBackgroundMessage(messaging, (payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload,
-  );
-
   const notificationTitle = payload.notification?.title || "Default Title";
   const notificationOptions = {
     body: payload.notification?.body || "Default body",

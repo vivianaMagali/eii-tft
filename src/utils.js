@@ -69,6 +69,8 @@ export const typeProducts = Object.freeze({
   pizza: "Pizza",
   hambur: "Hamburguesa",
   drink: "Bebida",
+  other: "Otro",
+  menu: "menú",
 });
 
 export const typeRole = Object.freeze({
@@ -86,4 +88,20 @@ export const getKeyByValueOfStateOrder = (value) => {
 
 export const getProductType = (key) => {
   return typeProducts[key] || "Tipo desconocido";
+};
+
+// Función para convertir la fecha en formato "dd/MM/yyyy HH:mm:ss" a objeto Date
+const parseDate = (dateString) => {
+  const [day, month, yearTime] = dateString.split("/");
+  const [year, time] = yearTime.split(" ");
+  return new Date(`${year}-${month}-${day}T${time}`);
+};
+
+// Función para ordenar las comandas por fecha
+export const sortCommandsByDate = (commands) => {
+  return commands.sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+    return dateB - dateA;
+  });
 };
