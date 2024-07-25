@@ -20,11 +20,13 @@ const Header = () => {
   };
 
   const goProfile = () => {
-    navigate("/profile");
+    user ? navigate("/profile") : navigate("/login");
   };
-  // TODO: aqui tener en cuenta que me esta recorriendo mi historial, tengo que tener en cuenta tambien
-  // el estado o algo para que me enseñe el que tengo ahora mismo y no una mesa en la que estuve hace un mes
-  const localRecord = record.find((rcd) => rcd.category === "local");
+
+  // Para saber si muestro al icono del restaurante debo estar en el local y tener una cuenta sin pagar
+  const localRecord = record.find(
+    (rcd) => rcd.category === "local" && rcd.paymentStatus === false,
+  );
   return (
     <div class="flex px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
       {showWaitTime && <WaitTime setShowWaitTime={setShowWaitTime} />}
@@ -35,7 +37,7 @@ const Header = () => {
       >
         <img class="w-16" src={logo} alt="Your Company" />
       </button>
-      {!user?.role && (
+      {user && !user?.role && (
         <div class="ml-auto flex items-center space-x-4">
           {callToWaiter && <CallToWaiter setCallToWaiter={setCallToWaiter} />}
           {localRecord && (
