@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { FirebaseContext } from "../firebase";
 import logo from "../assets/logo-removebg-preview.png";
 import { db } from "../firebase/firebase";
-import { typeRole } from "../utils";
+import { sortCommandsByDate, typeRole } from "../utils";
 
 const ChefPage = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const ChefPage = () => {
     );
 
     const unsubscribeCommands = onSnapshot(commandsRef, (snapshot) => {
-      setCommands(snapshot.docs.map((doc) => doc.data()));
+      setCommands(sortCommandsByDate(snapshot.docs.map((doc) => doc.data())));
     });
 
     return () => {

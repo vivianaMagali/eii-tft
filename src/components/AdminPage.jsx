@@ -13,8 +13,7 @@ const AdminPage = () => {
   const [inventory, setInventory] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [productSelected, setProductSelected] = useState();
-  const [menus, setMenus] = useState([]);
-  const [drinks, setDrinks] = useState([]);
+  const [products, setProducts] = useState([]);
   const [collectionSelected, setCollectionSelected] = useState();
   const [showModalConfirm, setShowConfirmOrderModal] = useState(false);
 
@@ -37,19 +36,12 @@ const AdminPage = () => {
     const menuCollectionRef = collection(restaurantDocRef, "menu");
 
     const unsubscribeMenu = onSnapshot(menuCollectionRef, (snapshot) => {
-      setMenus(snapshot.docs.map((doc) => doc.data()));
-    });
-
-    const drinksCollectionRef = collection(restaurantDocRef, "drinks");
-
-    const unsubscribeDrinks = onSnapshot(drinksCollectionRef, (snapshot) => {
-      setDrinks(snapshot.docs.map((doc) => doc.data()));
+      setProducts(snapshot.docs.map((doc) => doc.data()));
     });
 
     return () => {
       unsubscribeInventory();
       unsubscribeMenu();
-      unsubscribeDrinks();
     };
   }, [user]);
 
@@ -203,7 +195,7 @@ const AdminPage = () => {
             </tr>
           </thead>
           <tbody>
-            {menus.map((menu) => (
+            {products.map((menu) => (
               <tr key={menu.uid}>
                 <td>
                   <img src={menu.img} class="w-16" alt="img-product" />
@@ -240,64 +232,6 @@ const AdminPage = () => {
                       setShowForm(true);
                       setProductSelected(menu);
                       setCollectionSelected("menu");
-                    }}
-                  >
-                    <svg
-                      class="h-5 w-5 text-teal-500"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2"
-                      stroke="currentColor"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      {" "}
-                      <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />{" "}
-                      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {drinks.map((drink) => (
-              <tr key={drink.uid}>
-                <td>
-                  <img src={drink.img} class="w-14" alt="img-product" />
-                </td>
-                <td>{drink.name}</td>
-                <td>{drink.ingredients}</td>
-                <td>{drink.price}€</td>
-                <td>
-                  <button
-                    onClick={() => {
-                      setProductSelected(drink.uid);
-                      setCollectionSelected("drinks");
-                    }}
-                  >
-                    <svg
-                      class="h-6 w-6 text-teal-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => {
-                      setShowForm(true);
-                      setProductSelected(drink);
-                      setCollectionSelected("drinks");
                     }}
                   >
                     <svg

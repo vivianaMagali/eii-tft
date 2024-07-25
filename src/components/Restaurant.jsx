@@ -7,11 +7,14 @@ import OrderSummary from "./OrderSummary";
 import ConfirmOrder from "./ConfirmOrder";
 import Header from "./Header";
 import { RestaurantContext } from "../firebase/context";
+import { typeProducts } from "../utils";
 
 const Restaurant = () => {
   const { id } = useParams();
   const [menus, setMenus] = useState([]);
   const [drinks, setDrinks] = useState([]);
+  const [starters, setStarters] = useState([]);
+  const [mains, setMains] = useState([]);
   const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState();
   const [showConfirmOrderModal, setShowConfirmOrderModal] = useState(false);
@@ -28,18 +31,30 @@ const Restaurant = () => {
     const menuCollectionRef = collection(restaurantDocRef, "menu");
 
     const unsubscribeMenu = onSnapshot(menuCollectionRef, (snapshot) => {
-      setMenus(snapshot.docs.map((doc) => doc.data()));
-    });
-
-    const drinksCollectionRef = collection(restaurantDocRef, "drinks");
-
-    const unsubscribeDrinks = onSnapshot(drinksCollectionRef, (snapshot) => {
-      setDrinks(snapshot.docs.map((doc) => doc.data()));
+      setMenus(
+        snapshot.docs
+          .map((doc) => doc.data())
+          .filter((data) => data.type === typeProducts.menu),
+      );
+      setDrinks(
+        snapshot.docs
+          .map((doc) => doc.data())
+          .filter((data) => data.type === typeProducts.drink),
+      );
+      setStarters(
+        snapshot.docs
+          .map((doc) => doc.data())
+          .filter((data) => data.type === typeProducts.starter),
+      );
+      setMains(
+        snapshot.docs
+          .map((doc) => doc.data())
+          .filter((data) => data.type === typeProducts.main),
+      );
     });
 
     return () => {
       unsubscribeMenu();
-      unsubscribeDrinks();
     };
   }, [id]);
 
@@ -67,13 +82,35 @@ const Restaurant = () => {
         <div class="flex flex-col lg:flex-row justify-center my-14 px-8">
           <div class="flex flex-col justify-center">
             <span class="px-8 font-bold uppercase flex justify-center">
-              Comidas
+              Entrantes
+            </span>
+            <div class="flex flex-row flex-wrap items-start justify-center">
+              {starters?.length > 0 &&
+                starters.map((starter) => (
+                  <MenuCard
+                    key={starter.uid}
+                    product={starter}
+                    orders={orders}
+                    setOrders={setOrders}
+                    setShowOrderSummary={setShowOrderSummary}
+                    quantity={quantities[starter.name] || 0}
+                    setQuantity={(newQuantity) =>
+                      setQuantities((prev) => ({
+                        ...prev,
+                        [starter.name]: newQuantity,
+                      }))
+                    }
+                  />
+                ))}
+            </div>
+            <span class="px-8 font-bold uppercase flex justify-center">
+              Menús
             </span>
             <div class="flex flex-row flex-wrap items-start justify-center">
               {menus?.length > 0 &&
                 menus.map((menu) => (
                   <MenuCard
-                    key={menu.name}
+                    key={menu.uid}
                     product={menu}
                     orders={orders}
                     setOrders={setOrders}
@@ -88,14 +125,38 @@ const Restaurant = () => {
                   />
                 ))}
             </div>
+
+            <span class="px-8 font-bold uppercase flex justify-center">
+              Principales
+            </span>
+            <div class="flex flex-row flex-wrap items-start justify-center">
+              {mains?.length > 0 &&
+                mains.map((main) => (
+                  <MenuCard
+                    key={main.uid}
+                    product={main}
+                    orders={orders}
+                    setOrders={setOrders}
+                    setShowOrderSummary={setShowOrderSummary}
+                    quantity={quantities[main.name] || 0}
+                    setQuantity={(newQuantity) =>
+                      setQuantities((prev) => ({
+                        ...prev,
+                        [main.name]: newQuantity,
+                      }))
+                    }
+                  />
+                ))}
+            </div>
+
             <span class="px-8 font-bold uppercase flex justify-center">
               Bebidas
             </span>
             <div class="flex flex-row flex-wrap items-start justify-center">
-              {drinks?.length > 0 &&
+              {drinks?.length &&
                 drinks.map((drink) => (
                   <MenuCard
-                    key={drink.name}
+                    key={drink.uid}
                     product={drink}
                     orders={orders}
                     setOrders={setOrders}

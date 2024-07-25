@@ -19,7 +19,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
     price: productSelected?.price,
     amount: productSelected?.amount,
     producer: productSelected?.producer,
-    type: productSelected?.type || "starter",
+    type: productSelected?.type || typeProducts.other,
   };
 
   const objectMenu = {
@@ -27,19 +27,12 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
     ingredients: productSelected?.ingredients,
     price: productSelected?.price,
     img: productSelected?.img,
-  };
-
-  const objectDrink = {
-    name: productSelected?.name,
-    price: productSelected?.price,
-    img: productSelected?.img,
+    type: productSelected?.type || typeProducts.starter,
   };
 
   const defaultValueForm = () => {
     if (collectionSelected === "inventory") {
       return objectInventory;
-    } else if (collectionSelected === "drinks") {
-      return objectDrink;
     } else if (collectionSelected === "menu") {
       return objectMenu;
     }
@@ -85,9 +78,15 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
         user.uidRestaurant,
         collectionSelected,
       );
+      // Eliminar el campo ingredients si el tipo es bebida
+      let formDataUpdate;
+      if (formData.type === typeProducts.drink) {
+        const { ingredients, ...rest } = formData;
+        formDataUpdate = { ...rest };
+      }
       if (isEditMode) {
         const docRef = doc(collectionRef, productSelected.uid);
-        await updateDoc(docRef, formData);
+        await updateDoc(docRef, formDataUpdate);
       } else {
         const collectionRef = collection(
           db,
@@ -95,7 +94,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
           user.uidRestaurant,
           collectionSelected,
         );
-        const docRef = await addDoc(collectionRef, formData);
+        const docRef = await addDoc(collectionRef, formDataUpdate);
         await updateDoc(docRef, { uid: docRef.id });
       }
     } catch (error) {
@@ -109,7 +108,6 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
     e.preventDefault();
     setShowConfirmOrderModal(true);
   };
-
   return (
     <div
       id="crud-modal"
@@ -151,6 +149,29 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
         >
           <div class="w-full mb-1">
             <label
+              htmlFor="type"
+              class="block text-sm font-medium text-gray-900"
+            >
+              Tipo de producto
+            </label>
+            <select
+              id="type"
+              name="type"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              defaultValue={productSelected && productSelected?.type}
+              onChange={handleInputChange}
+            >
+              <option value={typeProducts.main}>{typeProducts.main}</option>
+              <option value={typeProducts.starter}>
+                {typeProducts.starter}
+              </option>
+              <option value={typeProducts.pizza}>{typeProducts.pizza}</option>
+              <option value={typeProducts.hambur}>{typeProducts.hambur}</option>
+              <option value={typeProducts.drink}>{typeProducts.drink}</option>
+            </select>
+          </div>
+          <div class="w-full mb-1">
+            <label
               htmlFor="name"
               class="block text-sm font-medium leading-6 text-gray-900"
             >
@@ -168,7 +189,7 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
               class="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
             />
           </div>
-          {collectionSelected !== "drinks" && (
+          {formData?.type !== typeProducts.drink && (
             <div class="w-full mb-1">
               <label
                 htmlFor="ingredients"
@@ -263,27 +284,6 @@ const ProductForm = ({ collectionSelected, setShowForm, productSelected }) => {
                   class="block w-full px-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ringt-teal-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              <div class="w-full mb-1">
-                <label
-                  htmlFor="type"
-                  class="block text-sm font-medium text-gray-900"
-                >
-                  Tipo de producto
-                </label>
-                <select
-                  id="type"
-                  name="type"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  defaultValue={productSelected && productSelected?.type}
-                  onChange={handleInputChange}
-                >
-                  <option value="main">{typeProducts.main}</option>
-                  <option value="starter">{typeProducts.starter}</option>
-                  <option value="pizza">{typeProducts.pizza}</option>
-                  <option value="hambur">{typeProducts.hambur}</option>
-                  <option value="drink">{typeProducts.drink}</option>
-                </select>
-              </div>{" "}
             </>
           )}
 
