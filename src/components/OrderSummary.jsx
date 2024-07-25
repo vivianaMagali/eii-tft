@@ -1,4 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FirebaseContext } from "../firebase";
+import { RestaurantContext } from "../firebase/context";
 
 const OrderSummary = ({
   orders,
@@ -7,8 +10,22 @@ const OrderSummary = ({
   total,
   setTotal,
 }) => {
+  const navigate = useNavigate();
+  const { user } = useContext(FirebaseContext);
+  const { uidRestaurant } = useContext(RestaurantContext);
+
+  console.log("uidRestaurant", uidRestaurant);
   const confirmOrder = () => {
-    setShowConfirmOrderModal(true);
+    if (user) {
+      setShowConfirmOrderModal(true);
+    } else {
+      // Guardar los orders en localStorage para no perder su valor al redireccionar al login
+      const savedOrders = JSON.stringify(orders);
+      localStorage.setItem("savedOrders", savedOrders);
+      const savedUidRestaurant = JSON.stringify(uidRestaurant);
+      localStorage.setItem("uidRestaurant", savedUidRestaurant);
+      navigate("/login");
+    }
   };
 
   useEffect(() => {

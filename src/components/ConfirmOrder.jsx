@@ -102,6 +102,8 @@ const ConfirmOrder = ({
       };
       await setDoc(docRef, updatedDocData);
       await setDoc(docRecordRef, updatedRecordDocData);
+      localStorage.removeItem("uidRestaurant");
+      localStorage.removeItem("savedOrders");
       setOrders([]);
       setShowConfirmOrderModal(false);
       setShowOrderSummary(false);

@@ -12,8 +12,8 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const pruebaRef = collection(db, "restaurants");
-    const unsubscribe = onSnapshot(pruebaRef, (snapshot) => {
+    const restaurantListRef = collection(db, "restaurants");
+    const unsubscribe = onSnapshot(restaurantListRef, (snapshot) => {
       setRestaurantList(snapshot.docs.map((doc) => doc.data()));
     });
 
@@ -21,7 +21,7 @@ const Home = () => {
   }, []);
 
   const getRestaurant = (restaurant) => {
-    navigate(`/restaurant/${restaurant.uid}`, { state: { restaurant } });
+    navigate(`/restaurant/${restaurant.uid}`);
   };
 
   const filterRestaurants = (text) => {

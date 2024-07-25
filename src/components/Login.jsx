@@ -36,19 +36,27 @@ const Login = () => {
           const userData = userDoc.data();
           const userRole = userData.role;
 
-          // Redirect based on user role
+          // Redirección basada en el rol del usuario
           if (userRole === typeRole.admin) {
             navigate("/admin");
           } else if (userRole === typeRole.cashier) {
             navigate("/cashier");
           } else if (userRole === typeRole.chef) {
-            //guardar o actualizar el token si el usuario es un cocinero
+            // Guardar o actualizar el token si el usuario es un cocinero
             await setDoc(userDocRef, { token: token, ...userDoc.data() });
             navigate("/chef");
           } else {
-            //guardar o actualizar el token si el usuario si es un cliente
+            // Guardar o actualizar el token si el usuario si es un cliente
             await setDoc(userDocRef, { token: token, ...userDoc.data() });
-            navigate("/home");
+
+            // Si existe guardada savedOrders en el localStorage rediccionar al Restaurante directamente
+            const savedOrders = localStorage.getItem("savedOrders");
+            const uidRestaurantLocalStorage =
+              localStorage.getItem("uidRestaurant");
+            const uidRestaurant = JSON.parse(uidRestaurantLocalStorage);
+            savedOrders
+              ? navigate(`/restaurant/${uidRestaurant}`)
+              : navigate("/home");
           }
         } else {
           console.log("no entra");

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { collection, doc, onSnapshot } from "firebase/firestore";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import { db } from "../firebase/firebase";
 import MenuCard from "./MenuCard";
 import OrderSummary from "./OrderSummary";
@@ -15,22 +15,27 @@ const Restaurant = () => {
   const [drinks, setDrinks] = useState([]);
   const [starters, setStarters] = useState([]);
   const [mains, setMains] = useState([]);
-  const [orders, setOrders] = useState([]);
+  const savedOrdersLocalStorage = localStorage.getItem("savedOrders");
+  const savedOrders = JSON.parse(savedOrdersLocalStorage);
+  const [orders, setOrders] = useState(savedOrders ? savedOrders : []);
   const [total, setTotal] = useState();
   const [showConfirmOrderModal, setShowConfirmOrderModal] = useState(false);
   const [showOrderSummary, setShowOrderSummary] = useState(false);
-  const location = useLocation();
-  const { restaurant } = location.state || {};
   const [quantities, setQuantities] = useState({});
+  const [restaurant, setRestaurant] = useState({});
 
   useEffect(() => {
     if (!id) return;
 
     const restaurantDocRef = doc(db, "restaurants", id);
 
+    const unsubscribeRestaurant = onSnapshot(restaurantDocRef, (snapshot) => {
+      setRestaurant(snapshot.data());
+    });
+
     const menuCollectionRef = collection(restaurantDocRef, "menu");
 
-    const unsubscribeMenu = onSnapshot(menuCollectionRef, (snapshot) => {
+    const unsubscribeProducts = onSnapshot(menuCollectionRef, (snapshot) => {
       setMenus(
         snapshot.docs
           .map((doc) => doc.data())
@@ -54,7 +59,8 @@ const Restaurant = () => {
     });
 
     return () => {
-      unsubscribeMenu();
+      unsubscribeProducts();
+      unsubscribeRestaurant();
     };
   }, [id]);
 
@@ -65,7 +71,10 @@ const Restaurant = () => {
   return (
     <div class="flex flex-col">
       <RestaurantContext.Provider
-        value={{ basicInformation: restaurant.basicInformation }}
+        value={{
+          basicInformation: restaurant.basicInformation,
+          uidRestaurant: restaurant.uid,
+        }}
       >
         <Header />
         {showConfirmOrderModal && (
