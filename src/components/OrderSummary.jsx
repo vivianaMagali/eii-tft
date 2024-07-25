@@ -14,7 +14,6 @@ const OrderSummary = ({
   const { user } = useContext(FirebaseContext);
   const { uidRestaurant } = useContext(RestaurantContext);
 
-  console.log("uidRestaurant", uidRestaurant);
   const confirmOrder = () => {
     if (user) {
       setShowConfirmOrderModal(true);
