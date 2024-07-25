@@ -16,7 +16,7 @@ const Header = () => {
   const [showRecord, setShowRecord] = useState(false);
 
   const goHome = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   const goProfile = () => {
