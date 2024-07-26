@@ -5,7 +5,6 @@ import { formatDate, generateUID, stateOrders } from "../utils";
 import { FirebaseContext } from "../firebase";
 import { db } from "../firebase/firebase";
 import Direction from "./Direction";
-import { Navigate } from "react-router-dom";
 
 const ConfirmOrder = ({
   orders,
