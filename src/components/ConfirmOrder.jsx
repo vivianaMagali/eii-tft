@@ -5,6 +5,7 @@ import { formatDate, generateUID, stateOrders } from "../utils";
 import { FirebaseContext } from "../firebase";
 import { db } from "../firebase/firebase";
 import Direction from "./Direction";
+import { Navigate } from "react-router-dom";
 
 const ConfirmOrder = ({
   orders,
@@ -23,6 +24,7 @@ const ConfirmOrder = ({
 
   const saveOrder = async (e) => {
     e.preventDefault();
+
     const dateNow = new Date();
     var inputElement = document.querySelector(
       ".my-2 .Field_container__t90fB .Field_field__DxK5r input",

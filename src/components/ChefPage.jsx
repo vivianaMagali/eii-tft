@@ -52,7 +52,7 @@ const ChefPage = () => {
         await updateDoc(docRef, {
           state: 3,
         });
-        sendPushNotification(command.token, command.table);
+        sendPushNotification(command);
       } catch (error) {
         console.log(error);
       }
@@ -60,6 +60,7 @@ const ChefPage = () => {
   };
 
   const changeToPreparing = async (command) => {
+    // Cambia estado a en preapración en la coleccón comandas
     const docRef = doc(
       db,
       "restaurants",
@@ -72,6 +73,26 @@ const ChefPage = () => {
     if (docSnap.exists()) {
       try {
         await updateDoc(docRef, {
+          state: 2,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    // Cambia estado en preparación en la colección record
+    const docRecordRef = doc(
+      db,
+      "users",
+      command.userUid,
+      "record",
+      command.uidOrder,
+    );
+    const docRecordSnap = await getDoc(docRecordRef);
+
+    if (docRecordSnap.exists()) {
+      try {
+        await updateDoc(docRecordRef, {
           state: 2,
         });
       } catch (error) {
@@ -98,8 +119,8 @@ const ChefPage = () => {
   }, []);
 
   // Endpoint para enviar la notificación push al dispositivo que realizó el pedido
-  const sendPushNotification = async (token, table) => {
-    const isSendCommandByWaiter = tokensWaiter.includes(token);
+  const sendPushNotification = async (command) => {
+    const isSendCommandByWaiter = tokensWaiter.includes(command.token);
     try {
       await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
@@ -112,10 +133,14 @@ const ChefPage = () => {
           // si el pedido la realizó un camarero, entonces la notificación le llega al camarero
           // si el pedido la realizó un cliente sin mesa, entonces la notificación le llega al cliente.
           registration_ids:
-            table && !isSendCommandByWaiter ? tokensWaiter : [token],
+            command.table && !isSendCommandByWaiter
+              ? tokensWaiter
+              : [command.token],
           notification: {
-            title: "Título de la notificación",
-            body: `Cuerpo de la notificación ${table}`,
+            title: "¡Su pedido está terminado!",
+            body: command?.table
+              ? `Puede recoger el pedido para la mesa: ${command.table}`
+              : `Puede recoger el pedido nº ${command.orderId}`,
           },
         }),
       });

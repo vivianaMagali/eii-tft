@@ -19,6 +19,9 @@ const Login = () => {
   const [error, setError] = useState();
   const navigate = useNavigate();
   const { token } = useContext(FirebaseContext);
+  const savedOrders = localStorage.getItem("savedOrders");
+  const uidRestaurantLocalStorage = localStorage.getItem("uidRestaurant");
+  const uidRestaurant = JSON.parse(uidRestaurantLocalStorage);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,10 +53,10 @@ const Login = () => {
             await setDoc(userDocRef, { token: token, ...userDoc.data() });
 
             // Si existe guardada savedOrders en el localStorage rediccionar al Restaurante directamente
-            const savedOrders = localStorage.getItem("savedOrders");
-            const uidRestaurantLocalStorage =
-              localStorage.getItem("uidRestaurant");
-            const uidRestaurant = JSON.parse(uidRestaurantLocalStorage);
+            // const savedOrders = localStorage.getItem("savedOrders");
+            // const uidRestaurantLocalStorage =
+            //   localStorage.getItem("uidRestaurant");
+            // const uidRestaurant = JSON.parse(uidRestaurantLocalStorage);
             savedOrders
               ? navigate(`/restaurant/${uidRestaurant}`)
               : navigate("/home");
@@ -89,7 +92,10 @@ const Login = () => {
         //obtener token y almacenarlo en la bd con el usuario
         await setDoc(userRef, userData);
         setError(undefined);
-        navigate("/home");
+        // Si existe guardada savedOrders en el localStorage rediccionar al Restaurante directamente
+        savedOrders
+          ? navigate(`/restaurant/${uidRestaurant}`)
+          : navigate("/home");
       } catch (error) {
         if (error.code === "auth/weak-password") {
           setError(

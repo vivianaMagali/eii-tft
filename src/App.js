@@ -18,7 +18,6 @@ import {
 } from "./firebase/firebase";
 import Profile from "./components/Profile";
 import Record from "./components/Record";
-import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Navigate } from "react-router-dom";
 import { typeRole } from "./utils";
@@ -97,7 +96,6 @@ function App() {
 
     // Configurar el receptor de mensajes
     const unsubscribe = onMessage(messaging, (payload) => {
-      // Aquí debo manejar la configuración para las notificaciones. Un componente Toaster
       const notificationTitle = payload.notification.title;
       const notificationBody = payload.notification.body;
       alert(`Título: ${notificationTitle}\nMensaje: ${notificationBody}`);
@@ -117,9 +115,8 @@ function App() {
           token: token,
         }}
       >
-        <Toaster />
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Home />} />
           <Route
             path="/admin"
             element={

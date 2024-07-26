@@ -12,15 +12,15 @@ const CallToWaiter = ({ setCallToWaiter }) => {
   const table = JSON.parse(tableLocalStorage);
 
   const getTheCheck = () => {
-    const title = "Llevar cuenta";
-    const body = `${("Llevar cuenta a la mesa nº", table)}`;
-    sendPushNotification(title, body, table);
+    const title = "¡Un cliente te solicita!";
+    const body = `Llevar cuenta a la mesa nº ${table}`;
+    sendPushNotification(title, body);
   };
 
   const callTheWaiter = () => {
-    const title = "Acercase a la mesa";
-    const body = `${("Llevar cuenta a la mesa nº", table)}`;
-    sendPushNotification(title, body, table);
+    const title = "¡Un cliente te solicita!";
+    const body = `Acude a la mesa nº ${table}`;
+    sendPushNotification(title, body);
   };
 
   // Obtengo los tokens de los camareros
@@ -36,7 +36,7 @@ const CallToWaiter = ({ setCallToWaiter }) => {
     });
   }, []);
 
-  const sendPushNotification = async () => {
+  const sendPushNotification = async (title, body) => {
     try {
       await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
@@ -47,8 +47,8 @@ const CallToWaiter = ({ setCallToWaiter }) => {
         body: JSON.stringify({
           registration_ids: tokensWaiter,
           notification: {
-            title: "Título de la notificación",
-            body: "Cuerpo de la notificación",
+            title: title,
+            body: body,
           },
         }),
       });

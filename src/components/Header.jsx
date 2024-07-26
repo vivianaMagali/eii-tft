@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../assets/logo-removebg-preview.png";
 import waiter from "../assets/camarero.png";
 import order from "../assets/comida.png";
@@ -7,6 +7,7 @@ import { FirebaseContext } from "../firebase";
 import WaitTime from "./WaitTime";
 import CallToWaiter from "./CallToWaiter";
 import Record from "./Record";
+import { stateOrders } from "../utils";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Header = () => {
   const [callToWaiter, setCallToWaiter] = useState(false);
   const [showWaitTime, setShowWaitTime] = useState(false);
   const [showRecord, setShowRecord] = useState(false);
+  const [localRecord, setLocalRecord] = useState();
+  // const [commandsPending, setCommandsPending] = useState();
 
   const goHome = () => {
     navigate("/home");
@@ -23,18 +26,27 @@ const Header = () => {
     user ? navigate("/profile") : navigate("/login");
   };
 
-  // Para saber si muestro al icono del restaurante debo estar en el local y tener una cuenta sin pagar
-  const localRecord = record.find(
-    (rcd) => rcd.category === "local" && rcd.paymentStatus === false,
+  // Si existen pedidos realizados que sean distinto a terminado, tengo que enseñar WaitTime
+  const commandsPending = record.find(
+    (rcd) => rcd.state !== stateOrders.TERMINADO,
   );
 
-  // Si estoy en una mesa guardo la variable en el estado local
-  if (localRecord) {
-    const savedTable = JSON.stringify(localRecord.table);
-    localStorage.setItem("table", savedTable);
-  } else {
-    localStorage.removeItem("table");
-  }
+  useEffect(() => {
+    // Para saber si muestro al icono del restaurante debo estar en el local y tener una cuenta sin pagar
+    setLocalRecord(
+      record.find(
+        (rcd) => rcd.category === "local" && rcd.paymentStatus === false,
+      ),
+    );
+
+    // Si estoy en una mesa guardo la variable en el estado local
+    if (localRecord) {
+      const savedTable = JSON.stringify(localRecord.table);
+      localStorage.setItem("table", savedTable);
+    } else {
+      localStorage.removeItem("table");
+    }
+  }, [localRecord, record]);
 
   return (
     <div class="flex px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
@@ -54,30 +66,34 @@ const Header = () => {
               <img src={waiter} alt="icon-waiter" class="h-10 w-10" />
             </button>
           )}
-          <button onClick={() => setShowWaitTime(true)}>
-            <img src={order} alt="icon-order" class="h-12 w-12" />
-          </button>
+          {commandsPending && (
+            <button onClick={() => setShowWaitTime(true)}>
+              <img src={order} alt="icon-order" class="h-12 w-12" />
+            </button>
+          )}
           {showRecord && <Record setShowRecord={setShowRecord} />}
-          <button onClick={() => setShowRecord(true)}>
-            <svg
-              class="h-10 w-10 text-teal-200"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              {" "}
-              <path stroke="none" d="M0 0h24v24H0z" />{" "}
-              <rect x="5" y="3" width="14" height="18" rx="2" />{" "}
-              <line x1="9" y1="7" x2="15" y2="7" />{" "}
-              <line x1="9" y1="11" x2="15" y2="11" />{" "}
-              <line x1="9" y1="15" x2="13" y2="15" />
-            </svg>
-          </button>
+          {record.length > 0 && (
+            <button onClick={() => setShowRecord(true)}>
+              <svg
+                class="h-10 w-10 text-teal-200"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {" "}
+                <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                <rect x="5" y="3" width="14" height="18" rx="2" />{" "}
+                <line x1="9" y1="7" x2="15" y2="7" />{" "}
+                <line x1="9" y1="11" x2="15" y2="11" />{" "}
+                <line x1="9" y1="15" x2="13" y2="15" />
+              </svg>
+            </button>
+          )}
         </div>
       )}
 
