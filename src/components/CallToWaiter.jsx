@@ -1,21 +1,41 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState } from "react";
 import waiter from "../assets/camarero.png";
-import { FirebaseContext } from "../firebase";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase/firebase";
+import { typeRole } from "../utils";
 
 const CallToWaiter = ({ setCallToWaiter }) => {
-  const { token } = useContext(FirebaseContext);
+  const [tokensWaiter, setTokensWaiter] = useState([]);
+
+  //Obtener mesa guardada en localStorage
+  const tableLocalStorage = localStorage.getItem("table");
+  const table = JSON.parse(tableLocalStorage);
 
   const getTheCheck = () => {
-    sendPushNotification();
+    const title = "Llevar cuenta";
+    const body = `${("Llevar cuenta a la mesa nº", table)}`;
+    sendPushNotification(title, body, table);
   };
 
   const callTheWaiter = () => {
-    sendPushNotification();
+    const title = "Acercase a la mesa";
+    const body = `${("Llevar cuenta a la mesa nº", table)}`;
+    sendPushNotification(title, body, table);
   };
 
-  // Endpoint para enviar la notificación push al dispositivo que realizó el pedido
-  // a quien le tiene que llegar la notificacion? en este caso al camarero que la pidió
-  // el token del dispositivo se guardará en bd cada vez que el usuario interactue con la app
+  // Obtengo los tokens de los camareros
+  useEffect(() => {
+    const usersCollectionRef = collection(db, "users");
+
+    onSnapshot(usersCollectionRef, (snapshot) => {
+      setTokensWaiter(
+        snapshot.docs
+          .filter((doc) => doc.data().role === typeRole.waiter)
+          .map((doc) => doc.data().token),
+      );
+    });
+  }, []);
+
   const sendPushNotification = async () => {
     try {
       await fetch("https://fcm.googleapis.com/fcm/send", {
@@ -25,7 +45,7 @@ const CallToWaiter = ({ setCallToWaiter }) => {
           Authorization: `key=${process.env.REACT_APP_KEY_SERVER}`,
         },
         body: JSON.stringify({
-          to: token,
+          registration_ids: tokensWaiter,
           notification: {
             title: "Título de la notificación",
             body: "Cuerpo de la notificación",

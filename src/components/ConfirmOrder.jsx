@@ -18,6 +18,9 @@ const ConfirmOrder = ({
   const [place, setPlace] = useState(null);
   const { id } = useParams();
   const { user, token } = useContext(FirebaseContext);
+  const tableLocalStorage = localStorage.getItem("table");
+  const table = JSON.parse(tableLocalStorage);
+
   const saveOrder = async (e) => {
     e.preventDefault();
     const dateNow = new Date();
@@ -28,13 +31,29 @@ const ConfirmOrder = ({
     const comandasRef = collection(db, "restaurants", id, "comandas");
     const querySnapshot = await getDocs(comandasRef);
 
-    const orderList = querySnapshot.size;
+    const orderList = querySnapshot.size || 1;
     const waitTime = Math.floor(
       orderList * restaurant.basic_information.waitTime,
     );
 
     const getData = () => {
-      if (e.target.category.value === "home") {
+      if (table) {
+        return {
+          date: formatDate(dateNow),
+          order: orders,
+          state: stateOrders.RECIBIDO,
+          userUid: user.uid,
+          category: "local",
+          table: table,
+          description: e.target.description.value,
+          name: restaurant.basic_information.name,
+          total,
+          orderId: generateUID(),
+          waitTime: waitTime,
+          paymentStatus: false,
+          token,
+        };
+      } else if (e.target.category.value === "home") {
         return {
           date: formatDate(dateNow),
           order: orders,
@@ -117,7 +136,7 @@ const ConfirmOrder = ({
 
   return (
     <div class="fixed z-10 inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
-      <div class="relative  max-w-full md:min-w-max lg:min-w-max sm:max-w-md h-screen bg-white rounded overflow-auto">
+      <div class="relative  max-w-full h-auto md:min-w-max lg:min-w-max sm:max-w-md bg-white rounded overflow-auto">
         <div class="flex items-center justify-between p-4 rounded-lg">
           <h3 class="text-gray-900 text-lg font-semibold">Confirmar pedido</h3>
           <button
@@ -171,7 +190,9 @@ const ConfirmOrder = ({
               Total: {total?.toFixed(2)}€
             </span>
           </div>
+
           <Direction restaurant={restaurant} setPlace={setPlace} />
+
           <div class="flex justify-center">
             <button
               type="submit"

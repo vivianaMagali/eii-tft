@@ -27,6 +27,15 @@ const Header = () => {
   const localRecord = record.find(
     (rcd) => rcd.category === "local" && rcd.paymentStatus === false,
   );
+
+  // Si estoy en una mesa guardo la variable en el estado local
+  if (localRecord) {
+    const savedTable = JSON.stringify(localRecord.table);
+    localStorage.setItem("table", savedTable);
+  } else {
+    localStorage.removeItem("table");
+  }
+
   return (
     <div class="flex px-3 py-3 items-center w-full bg-gradient-to-l from-teal-600 to-teal-100">
       {showWaitTime && <WaitTime setShowWaitTime={setShowWaitTime} />}
